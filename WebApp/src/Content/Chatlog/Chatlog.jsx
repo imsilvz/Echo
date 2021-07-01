@@ -9,6 +9,7 @@ const styles = theme => ({
         position: "relative",
         display: "flex",
         flexDirection: "column",
+        justifyContent: "flex-end",
 
         height: "100%",
         overflowX: "hidden",
