@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Echo.Core.Models
 {
-    public class ChatLinkToken : ControlToken
+    public class ChatLinkTokenOld : ControlToken
     {
         public string LinkType { get; set; }
         public string LinkValue { get; set; }

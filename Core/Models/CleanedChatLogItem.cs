@@ -84,21 +84,21 @@ using Sharlayan.Models;
         public void CleanMessageData()
         {
             int idx = 0;
-            ChatLinkToken unpaired = null;
+            ChatLinkTokenOld unpaired = null;
             while (idx < Tokens.Count)
             {
                 var link = Tokens[idx];
-                if (link is ChatLinkToken)
+                if (link is ChatLinkTokenOld)
                 {
                     if (unpaired is null)
                     {
-                        unpaired = (ChatLinkToken)link;
+                        unpaired = (ChatLinkTokenOld)link;
                         idx++;
                     }
                     else
                     {
                         // CF010101 marks the end of a chat link
-                        if (((ChatLinkToken)link).LinkType == "CF010101")
+                        if (((ChatLinkTokenOld)link).LinkType == "CF010101")
                         {
                             unpaired = null;
                             Tokens.RemoveAt(idx);
@@ -106,7 +106,7 @@ using Sharlayan.Models;
                         else
                         {
                             Debug.WriteLine("SCREAMING");
-                            Debug.WriteLine(((ChatLinkToken)link).LinkType);
+                            Debug.WriteLine(((ChatLinkTokenOld)link).LinkType);
                         }
                     }
                 }
@@ -114,7 +114,7 @@ using Sharlayan.Models;
                 {
                     if (link is ChatServerToken)
                     {
-                        if (Tokens[idx - 1] is ChatLinkToken)
+                        if (Tokens[idx - 1] is ChatLinkTokenOld)
                         {
                             // associate them!
                         }
@@ -130,9 +130,9 @@ using Sharlayan.Models;
             for(int i=0; i<Tokens.Count; i++)
             {
                 var token = Tokens[i];
-                if(token is ChatLinkToken)
+                if(token is ChatLinkTokenOld)
                 {
-                    this.PlayerName = ((ChatLinkToken)token).LinkValue;
+                    this.PlayerName = ((ChatLinkTokenOld)token).LinkValue;
                     if(i + 1 < Tokens.Count)
                     {
 

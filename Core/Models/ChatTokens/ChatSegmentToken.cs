@@ -79,5 +79,19 @@ namespace Echo.Core.Models.ChatTokens
                 message += Tokens[idx].BuildMessage();
             return message;
         }
+
+        public override List<ChatToken> GetTokens()
+        {
+            List<ChatToken> lst = new List<ChatToken>();
+            foreach(var token in Tokens)
+            {
+                List<ChatToken> tokenLst = token.GetTokens();
+                foreach(var child in tokenLst)
+                {
+                    lst.Add(child);
+                }
+            }
+            return lst;
+        }
     }
 }

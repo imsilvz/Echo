@@ -71,7 +71,7 @@ namespace Echo.Core.Models
                         var linkType = BitConverter.ToString(data, 0, delimIdx).Replace("-", "");
                         var linkValue = Encoding.UTF8.GetString(data, delimIdx + 2, data.Length - (delimIdx + 3));//BitConverter.ToString(data, delimIdx + 1, data.Length - (delimIdx + 1)).Replace("-", "");
 
-                        return new ChatLinkToken
+                        return new ChatLinkTokenOld
                         {
                             OpCode = OpCode.ToString("X2"),
                             LinkType = linkType,
