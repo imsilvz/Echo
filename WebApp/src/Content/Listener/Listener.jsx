@@ -7,12 +7,21 @@ import ChatMessage from "../Common/ChatMessage";
 const styles = theme => ({
     messagePanel: {
         position: "relative",
+        display: "flex",
+        flexDirection: "column",
 
         height: "100%",
         overflowX: "hidden",
         overflowY: "scroll",
         paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
+
+        '&::-webkit-scrollbar': {
+            display:"none",
+        },
+        '&::-webkit-scrollbar-thumb': {
+            display:"none",
+        }
     },
     messageCentered: {
         width: "100%",
@@ -24,13 +33,6 @@ const styles = theme => ({
         alignItems: "center",
         justifyContent: "center",
     },
-    innerContainer: {
-        position: "absolute",
-        left: theme.spacing(1),
-        right: theme.spacing(1),
-        bottom: theme.spacing(0.5),
-        overflow: "hidden",
-    }
 });
 
 @connect(state => ({ chatLog: state.chatlog, playerInfo: state.playerinfo }))
@@ -77,16 +79,14 @@ class Listener extends React.Component
         }
         return (
             <div className={classes.messagePanel}>
-                <div className={classes.innerContainer}>
-                    {chatLog.map((element, index) => {
-                        if(element.PlayerName == targetName) {
-                            return (
-                                <ChatMessage key={index} message={element}/>
-                            );
-                        }
-                    })}
-                    <div ref={this.messageEndRef}/>
-                </div>
+                {chatLog.map((element, index) => {
+                    if(element.PlayerName == targetName) {
+                        return (
+                            <ChatMessage key={index} message={element}/>
+                        );
+                    }
+                })}
+                <div ref={this.messageEndRef}/>
             </div>
         )
     }

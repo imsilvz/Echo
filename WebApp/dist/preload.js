@@ -7,6 +7,10 @@ window.addEventListener('DOMContentLoaded', () => {
             chrome.webview.hostObjects.sync.eventForwarder.MouseDownDrag();
             evt.preventDefault();
             evt.stopPropagation();
+        } else if(attr.grippable) {
+            chrome.webview.hostObjects.eventForwarder.ResizeDrag();
+            evt.preventDefault();
+            evt.stopPropagation();
         }
     });
 });

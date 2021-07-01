@@ -44,6 +44,15 @@ const styles = {
         bottom: "0",
         left: "0",
         overflow: "hidden"
+    },
+    grip: {
+        display: "block",
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        color: "#FFF",
+        width: "16px",
+        height: "16px"
     }
 }
 
@@ -65,6 +74,7 @@ class App extends React.Component {
                         </HashRouter>
                     </ThemeProvider>
                 </Provider>
+                <div className={classes.grip} data-grippable/>
             </div>
         );
     }

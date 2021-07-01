@@ -8,14 +8,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
         WindowStyle="None"
 >
+
     <Window.Background>
         <SolidColorBrush Opacity="0.5" Color="Black"/>
     </Window.Background>
-    <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="128" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
-    </WindowChrome.WindowChrome>
+
     <DockPanel>
         <wv2:WebView2 
             Name="webView"
