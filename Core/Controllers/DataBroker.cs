@@ -25,10 +25,10 @@ namespace Echo.Controllers
             Process[] processes = Process.GetProcessesByName("ffxiv_dx11");
             if(processes.Length >= 1)
             {
-                bool useLocalCache = false;
                 string patchVersion = "latest";
                 GameRegion gameRegion = GameRegion.Global;
                 GameLanguage gameLanguage = GameLanguage.English;
+                string cacheDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/Echo/cache/";
 
                 Process process = processes[0];
                 _processModel = new ProcessModel
@@ -42,7 +42,8 @@ namespace Echo.Controllers
                     GameLanguage = gameLanguage,
                     GameRegion = gameRegion,
                     PatchVersion = patchVersion,
-                    UseLocalCache = useLocalCache
+                    JSONCacheDirectory = cacheDir,
+                    UseLocalCache = true,
                 };
 
                 _memoryHandler = SharlayanMemoryManager.Instance.AddHandler(configuration);
@@ -148,7 +149,7 @@ namespace Echo.Controllers
 
         public string Ping()
         {
-            return QueryChat();
+            return "Pong!";
         }
     }
 }
