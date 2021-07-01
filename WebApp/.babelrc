@@ -1,0 +1,14 @@
+{
+    "presets": [
+        "@babel/env", 
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        ["@babel/plugin-transform-runtime", {
+            "helpers": false, // defaults to true
+            "regenerator": true, // defaults to true
+            "absoluteRuntime": "@babel/runtime" // defaults to "babel-runtime"
+        }],
+        ["@babel/plugin-proposal-decorators", { "legacy": true }]
+    ]
+}
