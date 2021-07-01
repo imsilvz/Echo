@@ -3,6 +3,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+using System.Text;
+using System.Text.Json;
+
 using Echo.Core.Models.ChatTokens;
 namespace Echo.Core.Models
 {
@@ -86,9 +89,10 @@ namespace Echo.Core.Models
 
             // extract data
             this.MessageType = _header.OpCode;
-            this.MessageSource = new ChatMessageSource(_source);
+            this.MessageSource = new ChatMessageSource(_source).ResolveSource(this.MessageType);
             this.MessageContent = new ChatMessageContent(_body);
             Debug.WriteLine($"{_header.BuildMessage()}:{_source.BuildMessage()}:{_body.BuildMessage()}");
+            Debug.WriteLine(JsonSerializer.Serialize(this.MessageSource));
 
             return success;
         }

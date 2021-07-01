@@ -9,6 +9,11 @@ namespace Echo.Core.Models.ChatTokens
 
         public override string BuildMessage()
         {
+            return this.GetTokenValue();
+        }
+
+        public string GetTokenValue()
+        {
             return Encoding.UTF8.GetString(Data);
         }
     }

@@ -80,9 +80,6 @@ namespace Echo.Controllers
                     foreach(var item in items)
                     {
                         var chatMessage = new ChatMessage(item.Bytes);
-                        string hex = BitConverter.ToString(item.Bytes)
-                            .Replace("-", string.Empty);
-                        Debug.WriteLine($"DATA: {hex}");
                         if (chatMessage.Tokenize()) 
                         {
                             cleanedMessages.Add(chatMessage);
@@ -124,24 +121,27 @@ namespace Echo.Controllers
                 var currentUser = _memoryHandler.Reader.GetCurrentPlayer();
                 var userEntity = currentUser.Entity;
 
-                data.ID = userEntity.ID;
-                data.Name = userEntity.Name;
-
-                if(_memoryHandler.Reader.CanGetTargetInfo())
+                if(userEntity is not null)
                 {
-                    var targetResult = _memoryHandler.Reader.GetTargetInfo();
-                    if(targetResult.TargetsFound)
+                    data.ID = userEntity.ID;
+                    data.Name = userEntity.Name;
+
+                    if (_memoryHandler.Reader.CanGetTargetInfo())
                     {
-                        var targetInfo = targetResult.TargetInfo;
-                        if(targetInfo.CurrentTarget is not null)
+                        var targetResult = _memoryHandler.Reader.GetTargetInfo();
+                        if (targetResult.TargetsFound)
                         {
-                            data.TargetID = targetInfo.CurrentTarget.ID;
-                            data.TargetType = targetInfo.CurrentTarget.Type;
-                            data.TargetName = targetInfo.CurrentTarget.Name;
+                            var targetInfo = targetResult.TargetInfo;
+                            if (targetInfo.CurrentTarget is not null)
+                            {
+                                data.TargetID = targetInfo.CurrentTarget.ID;
+                                data.TargetType = targetInfo.CurrentTarget.Type;
+                                data.TargetName = targetInfo.CurrentTarget.Name;
+                            }
                         }
                     }
+                    return JsonSerializer.Serialize(data);
                 }
-                return JsonSerializer.Serialize(data);
             }
             return "[]";
         }

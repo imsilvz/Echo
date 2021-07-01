@@ -63,5 +63,32 @@ namespace Echo.Core.Models.ChatTokens
         {
             return $"[Link({_internalSegment.BuildMessage()})]";
         }
+
+        public string GetTokenType()
+        {
+            return "";
+        }
+
+        public string GetTokenValue()
+        {
+            return "";
+        }
+
+        public string GetTokenText()
+        {
+            if(_internalSegment is not null)
+            {
+                var tokens = _internalSegment.GetTokens();
+                foreach(var token in tokens)
+                {
+                    // find the text entry!
+                    if(token is ChatTextToken)
+                    {
+                        return ((ChatTextToken)token).GetTokenValue();
+                    }
+                }
+            }
+            return "";
+        }
     }
 }
