@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -21,8 +22,9 @@ namespace Echo
         public MainWindow()
         {
             InitializeComponent();
-            webView.CoreWebView2InitializationCompleted += WebView_InitializationCompleted;
             this.Deactivated += MainWindow_Deactivated;
+            webView.CoreWebView2InitializationCompleted += WebView_InitializationCompleted;
+            webView.NavigationCompleted += WebView_NavigationCompleted;
             InitializeAsync();
         }
 
@@ -36,24 +38,9 @@ namespace Echo
             );
             await webView.EnsureCoreWebView2Async(env);
 
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "echo.app", @"./WebApp/",
-                CoreWebView2HostResourceAccessKind.Allow
-            );
-            
-            webView.Source = new Uri(@"https://echo.app/public/index.html");
+            string app = LoadResource("Echo.WebApp.public.index.html");
+            webView.NavigateToString(app);
             webView.CoreWebView2.OpenDevToolsWindow();
-        }
-
-        private void WebView_InitializationCompleted(object sender, EventArgs e)
-        {
-            var dataBroker = Program.Broker;
-            var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
-
-            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
-            webView.CoreWebView2.AddHostObjectToScript("dataBroker", dataBroker);
-            webView.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
-            webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(File.ReadAllText(@"./WebApp/dist/preload.js"));
         }
 
         // Keep On top!
@@ -61,6 +48,39 @@ namespace Echo
         {
             Window window = (Window)sender;
             window.Topmost = true;
+        }
+
+        private void WebView_InitializationCompleted(object sender, EventArgs e)
+        {
+            var dataBroker = Program.Broker;
+            var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
+            string preload = LoadResource("Echo.WebApp.dist.preload.js");
+
+            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            webView.CoreWebView2.AddHostObjectToScript("dataBroker", dataBroker);
+            webView.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(preload);
+        }
+
+        private void WebView_NavigationCompleted(object sender, EventArgs e)
+        {
+            // Send React script
+            string script = LoadResource("Echo.WebApp.dist.bundle.js");
+            webView.ExecuteScriptAsync(script);
+        }
+
+        private string LoadResource(string name)
+        {
+            string data = null;
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream s = assembly.GetManifestResourceStream(name))
+            {
+                using(StreamReader r = new StreamReader(s))
+                {
+                    data = r.ReadToEnd();
+                }
+            }
+            return data;
         }
     }
 }

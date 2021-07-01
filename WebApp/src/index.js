@@ -80,4 +80,4 @@ class App extends React.Component {
     }
 }
 const StyledApp = withStyles(styles)(App);
-ReactDOM.render(<StyledApp/>, document.getElementById("root"));
+ReactDOM.render(<StyledApp />, document.getElementById("root"));
