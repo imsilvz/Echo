@@ -22,6 +22,7 @@ namespace Echo
         {
             InitializeComponent();
             webView.CoreWebView2InitializationCompleted += WebView_InitializationCompleted;
+            this.Deactivated += MainWindow_Deactivated;
             InitializeAsync();
         }
 
@@ -53,6 +54,13 @@ namespace Echo
             webView.CoreWebView2.AddHostObjectToScript("dataBroker", dataBroker);
             webView.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
             webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(File.ReadAllText(@"./WebApp/dist/preload.js"));
+        }
+
+        // Keep On top!
+        private void MainWindow_Deactivated(object sender, EventArgs e)
+        {
+            Window window = (Window)sender;
+            window.Topmost = true;
         }
     }
 }

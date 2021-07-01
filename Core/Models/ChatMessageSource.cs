@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Text.Json;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Echo.Core.Enum.FFXIV;
 using Echo.Core.Models.ChatTokens;
 namespace Echo.Core.Models
 {
     public class ChatMessageSource
     {
+        public bool IsBattle { get; set; }
+        public bool IsSystem { get; set; }
         public string SourcePlayer { get; set; }
         public string SourceServer { get; set; }
         public List<ChatToken> Tokens { get; set; }
@@ -19,19 +23,18 @@ namespace Echo.Core.Models
         {
             this._segment = token;
             this.Tokens = token.GetTokens();
+
+            this.IsBattle = false;
+            this.IsSystem = false;
         }
 
-        public ChatMessageSource ResolveSource(string OpCode)
+        public ChatMessageSource ResolveSource(string StrCode)
         {
-            switch(OpCode)
+            ushort OpCode = ushort.Parse(StrCode, System.Globalization.NumberStyles.AllowHexSpecifier);
+            switch (OpCode)
             {
-                case "000A": // SAY
-                case "000B": // SHOUT
-                case "000C": // TELL (Outgoing)
-                case "000D": // TELL (Incoming)
-                case "001C": // EMOTE
-                case "001D": // ANIMATED EMOTE
-                case "001E": // YELL
+                // STANDARD CHAT
+                case ushort typ when System.Enum.IsDefined(typeof(StandardChatType), typ):
                     // [ChatLinkToken OR ChatTextToken, (ChatIconToken), (ChatTextToken)]
                     // [PlayerName, N/A, ServerName]
                     ChatToken nameToken;
@@ -57,8 +60,25 @@ namespace Echo.Core.Models
                             goto case 1;
                         default:
                             // Unknown Behavior!
+                            Debug.WriteLine(this.ListTokens());
                             throw new ApplicationException("Unexpected Token Count!");
                     }
+                    break;
+
+                // SPECIAL CHAT
+                case ushort typ when System.Enum.IsDefined(typeof(SpecialChatType), typ):
+                    // messages in Novice Network have an extra icon preceding the chat link
+                    Debug.WriteLine(this.ListTokens());
+                    break;
+
+                // BATTLE CHATLOG
+                case ushort typ when System.Enum.IsDefined(typeof(BattleChatType), typ):
+                    this.IsBattle = true;
+                    break;
+
+                // SYSTEM MESSAGES
+                case ushort typ when System.Enum.IsDefined(typeof(SystemChatType), typ):
+                    this.IsSystem = true;
                     break;
                 default:
                     break;

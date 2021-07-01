@@ -7,12 +7,21 @@ import ChatMessage from "../Common/ChatMessage";
 const styles = theme => ({
     messagePanel: {
         position: "relative",
-        
+        display: "flex",
+        flexDirection: "column",
+
         height: "100%",
         overflowX: "hidden",
         overflowY: "scroll",
         paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1)
+        paddingRight: theme.spacing(1),
+
+        '&::-webkit-scrollbar': {
+            display:"none",
+        },
+        '&::-webkit-scrollbar-thumb': {
+            display:"none",
+        }
     },
     messageCentered: {
         width: "100%",
@@ -24,14 +33,6 @@ const styles = theme => ({
         alignItems: "center",
         justifyContent: "center",
     },
-    innerContainer: {
-        position: "absolute",
-        top: 0,
-        left: theme.spacing(1),
-        right: theme.spacing(1),
-        bottom: theme.spacing(0.5),
-        overflow: "hidden",
-    }
 });
 
 @connect(state => ({ chatLog: state.chatlog }))
@@ -64,14 +65,12 @@ class Chatlog extends React.Component
         const { classes, chatLog } = this.props;
         return (
             <div className={classes.messagePanel}>
-                <div className={classes.innerContainer}>
-                    {chatLog.map((element, index) => {
-                        return (
-                            <ChatMessage key={index} message={element}/>
-                        );
-                    })}
-                    <div ref={this.messageEndRef}/>
-                </div>
+                {chatLog.map((element, index) => {
+                    return (
+                        <ChatMessage key={index} message={element}/>
+                    );
+                })}
+                <div ref={this.messageEndRef}/>
             </div>
         )
     }
