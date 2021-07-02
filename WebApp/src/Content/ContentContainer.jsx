@@ -101,7 +101,7 @@ const Menu = withStyles(styles, { withTheme: true })(
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    <IconButton onClick={closeDrawer}>
+                    <IconButton size="small" onClick={closeDrawer}>
                         <ChevronLeftIcon/>
                     </IconButton>
                 </div>

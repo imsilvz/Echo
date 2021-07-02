@@ -28,6 +28,7 @@ class CloseButton extends React.Component {
             <IconButton 
                 aria-label="close" 
                 color="inherit"
+                size="small"
                 onClick={(e) => this.OnClose(e)}
             >
                 <CloseIcon/>
