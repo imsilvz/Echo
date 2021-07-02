@@ -7,9 +7,7 @@ const Chatlog = (props) => {
     return (
         <MessageLog
             Messages={chatLog}
-            ShouldDisplay={(message) => {
-                return true;
-            }}
+            EmptyMessage="No Messages"
         />
     )
 }

@@ -6,14 +6,21 @@ const Listener = (props) => {
     const chatLog = useSelector((state) => state.chatlog);
     const playerInfo = useSelector((state) => state.playerinfo);
 
-    let targetName = playerInfo ? playerInfo.TargetName : "";
+    let filtered = [];
+    let targetName = playerInfo ? 
+        (playerInfo.TargetName || playerInfo.Name) 
+        : "";
+    for(let i=0; i<chatLog.length; i++) {
+        let msg = chatLog[i];
+        if(msg.MessageSource.SourcePlayer == targetName) {
+            filtered.push(msg);
+        }
+    }
+
     return (
         <MessageLog
-            Messages={chatLog}
-            ShouldDisplay={(message) => {
-                let source = message.MessageSource;
-                return source.SourcePlayer == targetName;
-            }}
+            Messages={filtered}
+            EmptyMessage={targetName ? "No Messages" : "You have no target!"}
         />
     )
 }

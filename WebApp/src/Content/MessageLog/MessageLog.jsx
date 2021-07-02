@@ -165,7 +165,7 @@ class MessageLog extends React.Component
 
     render() {
         const { classes } = this.props;
-        const { Messages, ShouldDisplay } = this.props;
+        const { Messages, EmptyMessage } = this.props;
         const { smartScrollTop, smartScrollBot } = this.state;
 
         // dynamically position top depending on panel size
@@ -179,33 +179,37 @@ class MessageLog extends React.Component
                 className={classes.messagePanel} 
                 ref={this.messagePanelRef}
             >
-                <div 
-                    className={classes.messageContainer}>
-                    {Messages.map((item, idx) => {
-                        if(ShouldDisplay(item))
-                        {
-                            return (
-                                <ChatMessage key={idx} message={item}/>
-                            );
-                        }
-                    })}
-                    <div className={classes.messageEnd} ref={this.messageEndRef}/>
-                    <div className={classes.messageEnd} style={{top: -panelHeight}} ref={this.messageEndRef2}/>
-                </div>
-                {!!!(smartScrollTop || smartScrollBot) && (
-                    <div className={classes.scrollCatchup}>
-                        <Button 
-                            className={classes.scrollButton}
-                            endIcon={<ArrowDownwardIcon/>} 
-                            size="small" 
-                            variant="contained"
-                            onClick={() => {
-                                console.log("Hello World!");
-                                this.scrollToBottom();
-                            }}
-                        >
-                            Jump to Present
-                        </Button>
+                { Messages.length > 0 ? (
+                    <React.Fragment>
+                        <div className={classes.messageContainer}>
+                            {Messages.map((item, idx) => {
+                                return (
+                                    <ChatMessage key={idx} message={item}/>
+                                );
+                            })}
+                            <div className={classes.messageEnd} ref={this.messageEndRef}/>
+                            <div className={classes.messageEnd} style={{top: -panelHeight}} ref={this.messageEndRef2}/>
+                        </div>
+                        {!!!(smartScrollTop || smartScrollBot) && (
+                            <div className={classes.scrollCatchup}>
+                                <Button 
+                                    className={classes.scrollButton}
+                                    endIcon={<ArrowDownwardIcon/>} 
+                                    size="small" 
+                                    variant="contained"
+                                    onClick={() => {
+                                        console.log("Hello World!");
+                                        this.scrollToBottom();
+                                    }}
+                                >
+                                    Jump to Present
+                                </Button>
+                            </div>
+                        )}
+                    </React.Fragment>
+                ) : (
+                    <div className={classes.messageCentered}>
+                        <p>{EmptyMessage}</p>
                     </div>
                 )}
             </div>
