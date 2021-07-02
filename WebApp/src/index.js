@@ -27,6 +27,7 @@ const theme = createMuiTheme({
         MuiCssBaseline: {
             '@global': {
                 body: {
+                    //filter: "blur(8px)",
                     backgroundColor: "transparent",
                 }
             }
