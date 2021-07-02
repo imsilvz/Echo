@@ -118,6 +118,13 @@ namespace Sharlayan {
 
         public event MemoryLocationsFoundEvent OnMemoryLocationsFound = delegate { };
 
+        public int GetProcessID()
+        {
+            if (this.IsAttached)
+                return this.Configuration.ProcessModel.ProcessID;
+            return -1;
+        }
+
         public byte GetByte(IntPtr address, long offset = 0) {
             byte[] data = new byte[1];
             this.Peek(new IntPtr(address.ToInt64() + offset), data);

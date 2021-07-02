@@ -13,6 +13,7 @@
     <PublishSingleFile>True</PublishSingleFile>
     <PublishReadyToRun>False</PublishReadyToRun>
     <AssemblyName>Echo</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   
   <ItemGroup>

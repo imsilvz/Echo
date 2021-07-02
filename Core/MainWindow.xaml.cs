@@ -52,7 +52,7 @@ namespace Echo
 
         private void WebView_InitializationCompleted(object sender, EventArgs e)
         {
-            var dataBroker = Program.Broker;
+            var dataBroker = DataBroker.Instance;
             var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
             string preload = LoadResource("Echo.WebApp.dist.preload.js");
 

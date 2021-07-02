@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 using Echo.Core.Models;
-using Echo.Core.JSON;
+using Echo.SharlayanWrappers;
 
 using Sharlayan;
 using Sharlayan.Core;
@@ -15,139 +15,87 @@ namespace Echo.Controllers
 {
     public class DataBroker
     {
-        ProcessModel _processModel;
-        MemoryHandler _memoryHandler;
+        private static Lazy<DataBroker> _instance = new Lazy<DataBroker>(() => new DataBroker());
+        public static DataBroker Instance => _instance.Value;
 
-        private int _prevChatIndex = 0;
-        private int _prevChatOffset = 0;
+        private ActorItem _lastPlayerData;
+        private TargetInfo _lastTargetData;
+        private List<ChatMessage> _chatlog;
+        private int _chatlogOffset = 0;
+
         public DataBroker()
         {
-            Process[] processes = Process.GetProcessesByName("ffxiv_dx11");
-            if(processes.Length >= 1)
-            {
-                string patchVersion = "latest";
-                GameRegion gameRegion = GameRegion.Global;
-                GameLanguage gameLanguage = GameLanguage.English;
-                string cacheDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/Echo/cache/";
-
-                Process process = processes[0];
-                _processModel = new ProcessModel
-                {
-                    Process = process
-                };
-
-                SharlayanConfiguration configuration = new SharlayanConfiguration
-                {
-                    ProcessModel = _processModel,
-                    GameLanguage = gameLanguage,
-                    GameRegion = gameRegion,
-                    PatchVersion = patchVersion,
-                    JSONCacheDirectory = cacheDir,
-                    UseLocalCache = true,
-                };
-
-                _memoryHandler = SharlayanMemoryManager.Instance.AddHandler(configuration);
-            }
-        }
-
-        ~DataBroker()
-        {
-            SharlayanMemoryManager.Instance.RemoveHandler(_processModel.ProcessID);
-        }
-
-        public bool Connect()
-        {
-            return false;
+            SetupEventHost();
+            _chatlog = new List<ChatMessage>();
         }
 
         public string QueryChat()
         {
-            if (_memoryHandler.Reader.CanGetChatLog())
-            {
-                var chatLog = _memoryHandler.Reader.GetChatLog(
-                    _prevChatIndex,
-                    _prevChatOffset
-                );
+            var messages = _chatlog;
 
-                if(!chatLog.ChatLogItems.IsEmpty)
-                {
-                    var items = chatLog.ChatLogItems.ToArray();
-                    _prevChatIndex = chatLog.PreviousArrayIndex;
-                    _prevChatOffset = chatLog.PreviousOffset;
+            // get offset
+            var len = messages.Count;
+            ChatMessage[] update = new ChatMessage[len - _chatlogOffset];
+            messages.CopyTo(_chatlogOffset, update, 0, update.Length);
+            _chatlogOffset += update.Length;
 
-                    // TODO: associate chat message with actor ID
-                    var cleanedMessages = new List<ChatMessage>();
-                    var cleanedItems = new List<CleanedChatLogItem>();
-                    foreach(var item in items)
-                    {
-                        var chatMessage = new ChatMessage(item.Bytes);
-                        if (chatMessage.Tokenize()) 
-                        {
-                            cleanedMessages.Add(chatMessage.Resolve());
-                        }
-                        else
-                        {
-                            Debug.WriteLine("ERROR TOKENIZING CHAT MESSAGE");
-                            string hex1 = BitConverter.ToString(item.Bytes)
-                                .Replace("-", string.Empty);
-                            Debug.WriteLine($"DATA: {hex1}");
-                        }
-                        //var cleanedItem = new CleanedChatLogItem(item);
-                        //cleanedItems.Add(cleanedItem);
-                    }
-
-                    var serializeOptions = new JsonSerializerOptions
-                    {
-                        WriteIndented = true,
-                        /*Converters =
-                        {
-                            new CleanedChatLogConverter()
-                        }*/
-                    };
-
-                    //var text = JsonSerializer.Serialize<List<CleanedChatLogItem>>(cleanedItems, serializeOptions);
-                    return JsonSerializer.Serialize<List<ChatMessage>>(cleanedMessages);
-                }
-            }
-            return "[]";
+            // serialize
+            return JsonSerializer.Serialize(update);
         }
 
         public string QueryPlayer()
         {
-            if (_memoryHandler.Reader.CanGetCurrentUser())
+            var data = new PlayerData();
+
+            if(_lastPlayerData is not null)
             {
-                PlayerData data = new PlayerData();
-                var currentUser = _memoryHandler.Reader.GetCurrentPlayer();
-                var userEntity = currentUser.Entity;
+                data.ID = _lastPlayerData.ID;
+                data.Name = _lastPlayerData.Name;
 
-                if(userEntity is not null)
+                var currentTarget = _lastTargetData.CurrentTarget;
+                if (currentTarget is not null)
                 {
-                    data.ID = userEntity.ID;
-                    data.Name = userEntity.Name;
-
-                    if (_memoryHandler.Reader.CanGetTargetInfo())
-                    {
-                        var targetResult = _memoryHandler.Reader.GetTargetInfo();
-                        if (targetResult.TargetsFound)
-                        {
-                            var targetInfo = targetResult.TargetInfo;
-                            if (targetInfo.CurrentTarget is not null)
-                            {
-                                data.TargetID = targetInfo.CurrentTarget.ID;
-                                data.TargetType = targetInfo.CurrentTarget.Type;
-                                data.TargetName = targetInfo.CurrentTarget.Name;
-                            }
-                        }
-                    }
-                    return JsonSerializer.Serialize(data);
+                    data.TargetID = currentTarget.ID;
+                    data.TargetName = currentTarget.Name;
+                    data.TargetType = currentTarget.Type;
                 }
             }
-            return "[]";
+            return JsonSerializer.Serialize(data);
         }
 
-        public string Ping()
+        private void SetupEventHost()
         {
-            return "Pong!";
+            EventHost.Instance.OnNewChatLogItem += this.SharlayanEvent_OnChatUpdate;
+            EventHost.Instance.OnNewCurrentUser += this.SharlayanEvent_OnPlayerUpdate;
+            EventHost.Instance.OnNewTargetInfo += this.SharlayanEvent_OnTargetUpdate;
+        }
+
+        private void SharlayanEvent_OnChatUpdate(object? sender, MemoryHandler memoryHandler, ChatLogItem chatLogItem)
+        {
+            byte[] bytes = chatLogItem.Bytes;
+            var chatMessage = new ChatMessage(bytes);
+
+            if(chatMessage.Tokenize())
+            {
+                _chatlog.Add(chatMessage.Resolve());
+            }
+            else
+            {
+                Debug.WriteLine("ERROR TOKENIZING CHAT MESSAGE");
+                string hex1 = BitConverter.ToString(bytes)
+                    .Replace("-", string.Empty);
+                Debug.WriteLine($"DATA: {hex1}");
+            }
+        }
+
+        private void SharlayanEvent_OnPlayerUpdate(object? sender, MemoryHandler memoryHandler, ActorItem actorItem)
+        {
+            _lastPlayerData = actorItem;
+        }
+
+        private void SharlayanEvent_OnTargetUpdate(object? sender, MemoryHandler memoryHandler, TargetInfo targetInfo)
+        {
+            _lastTargetData = targetInfo;
         }
     }
 }
