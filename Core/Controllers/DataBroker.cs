@@ -83,32 +83,30 @@ namespace Echo.Controllers
                         var chatMessage = new ChatMessage(item.Bytes);
                         if (chatMessage.Tokenize()) 
                         {
-                            cleanedMessages.Add(chatMessage);
-                            // do something!
-                            //Debug.WriteLine(JsonSerializer.Serialize(chatMessage));
+                            cleanedMessages.Add(chatMessage.Resolve());
                         }
                         else
                         {
-                            Debug.WriteLine("ERROR PARSING CHAT MESSAGE");
+                            Debug.WriteLine("ERROR TOKENIZING CHAT MESSAGE");
                             string hex1 = BitConverter.ToString(item.Bytes)
                                 .Replace("-", string.Empty);
                             Debug.WriteLine($"DATA: {hex1}");
                         }
-                        var cleanedItem = new CleanedChatLogItem(item);
-                        cleanedItems.Add(cleanedItem);
+                        //var cleanedItem = new CleanedChatLogItem(item);
+                        //cleanedItems.Add(cleanedItem);
                     }
 
                     var serializeOptions = new JsonSerializerOptions
                     {
                         WriteIndented = true,
-                        Converters =
+                        /*Converters =
                         {
                             new CleanedChatLogConverter()
-                        }
+                        }*/
                     };
 
-                    var text = JsonSerializer.Serialize<List<CleanedChatLogItem>>(cleanedItems, serializeOptions);
-                    return text;
+                    //var text = JsonSerializer.Serialize<List<CleanedChatLogItem>>(cleanedItems, serializeOptions);
+                    return JsonSerializer.Serialize<List<ChatMessage>>(cleanedMessages);
                 }
             }
             return "[]";

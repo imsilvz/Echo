@@ -39,7 +39,6 @@ namespace Echo.Controllers
 
         public void ResizeDrag()
         {
-            //Debug.WriteLine("Hello World");
             ReleaseCapture();
             SendMessage(target, WM_NCLBUTTONDOWN, HT_BOTTOMRIGHT, 0);
         }
