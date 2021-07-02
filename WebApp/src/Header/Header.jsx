@@ -13,6 +13,7 @@ import Typography  from '@material-ui/core/Typography';
 //import '@fontsource/roboto';
 const styles = theme => ({
     appBar: {
+        minHeight: "32px",
         transition: theme.transitions.create(['margin', 'padding', 'width'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -61,7 +62,7 @@ class Header extends React.Component {
                     )}
                     <Typography 
                         component="h1"
-                        variant="h6"
+                        variant="subtitle1"
                         color="textSecondary"
                         className={classes.menuTitle}
                         data-draggable

@@ -27,8 +27,9 @@ class MenuButton extends React.Component {
         const { classes } = this.props;
         return (
             <IconButton 
-                color="inherit"
                 aria-label="menu"
+                color="inherit"
+                size="small"
                 onClick={(e) => this.OnClicked(e)}
             >
                 <MenuIcon/>

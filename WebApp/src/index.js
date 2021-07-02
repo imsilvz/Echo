@@ -17,7 +17,7 @@ import ContentContainer from './Content/ContentContainer';
 const theme = createMuiTheme({
     mixins: {
         denseToolbar: {
-            minHeight: 48
+            minHeight: 32
         }
     },
     palette: {
@@ -30,6 +30,11 @@ const theme = createMuiTheme({
                     //filter: "blur(8px)",
                     backgroundColor: "transparent",
                 }
+            },
+        },
+        MuiToolbar: {
+            dense: {
+                minHeight: 32,
             }
         }
     }
