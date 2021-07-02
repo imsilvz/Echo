@@ -99,7 +99,8 @@ namespace Echo.Core.Models
                     }
                     break;
                 default:
-                    Debug.WriteLine(this.ListTokens());
+                    Debug.WriteLine($"{StrCode}: {this.ListTokens()}");
+                    Debug.WriteLine(this._segment.BuildMessage());
                     Message = _segment.BuildMessage();
                     break;
             }

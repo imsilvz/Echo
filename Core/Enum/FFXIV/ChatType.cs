@@ -35,7 +35,9 @@ namespace Echo.Core.Enum.FFXIV
         // System
         WelcomeMessage      = 0x0003,
         SystemMessage       = 0x0039,
+        SystemError         = 0x0044,
         PartyFinderMessage  = 0x0048,
+        PlayerLevelUp       = 0x2040,
     }
 
     public enum BattleChatType : ushort
@@ -71,6 +73,8 @@ namespace Echo.Core.Enum.FFXIV
     {
         WelcomeMessage = 0x0003,
         SystemMessage = 0x0039,
+        SystemError = 0x0044,
         PartyFinderMessage = 0x0048,
+        PlayerLevelUp = 0x2040,
     }
 }

@@ -8,14 +8,14 @@ const styles = theme => ({
     messagePanel: {
         position: "relative",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
+        flexDirection: "column-reverse",
 
         height: "100%",
         overflowX: "hidden",
         overflowY: "scroll",
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
+        paddingBottom: theme.spacing(0.5),
 
         '&::-webkit-scrollbar': {
             display:"none",
@@ -80,14 +80,16 @@ class Listener extends React.Component
         }
         return (
             <div className={classes.messagePanel}>
-                {chatLog.map((element, index) => {
-                    if(element.PlayerName == targetName) {
+                <div ref={this.messageEndRef}/>
+                {chatLog.map((element, index, array) => {
+                    let idx = array.length - index - 1;
+                    let item = array[idx];
+                    if(item.MessageSource.SourcePlayer == targetName) {
                         return (
-                            <ChatMessage key={index} message={element}/>
+                            <ChatMessage key={idx} message={item}/>
                         );
                     }
                 })}
-                <div ref={this.messageEndRef}/>
             </div>
         )
     }

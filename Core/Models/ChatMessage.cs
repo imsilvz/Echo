@@ -12,6 +12,8 @@ namespace Echo.Core.Models
     public class ChatMessage
     {
         public string MessageType { get; set; }
+        public string Combined { get; set; }
+        public DateTime Timestamp { get; set; }
         public ChatMessageSource MessageSource { get; set; }
         public ChatMessageContent MessageContent { get; set; }
 
@@ -36,15 +38,21 @@ namespace Echo.Core.Models
             {
                 using(var reader = new BinaryReader(s))
                 {
-                    // Segment 1 is the header, terminated by 1F
-                    do
+                    // I don't think this will every happen
+                    // But since some messages start with 1F
+                    // we will read the header differently
+                    if (s.Length < 9) { return false; }
+
+                    // Segment 1 is the header, 8 bytes long, terminated by 1F
+                    for(int i=0; i<8; i++)
                     {
                         byte b = reader.ReadByte();
-                        if(b == 0x1F)
-                            break;
                         byteList.Add(b);
                     }
-                    while(s.Position < s.Length);
+                    byte term = reader.ReadByte();
+
+                    // verify it is a proper terminator
+                    if(term != 0x1F) { return false; }
 
                     headerBytes = byteList.ToArray();
                     byteList.Clear();
@@ -79,22 +87,27 @@ namespace Echo.Core.Models
             _source = new ChatSegmentToken(sourceBytes);
             _body = new ChatSegmentToken(payloadBytes);
 
-            bool success = (
-                _header.Tokenize()
-                && _source.Tokenize()
-                && _body.Tokenize()
-            );
-            if (!success)
-                return false;
-            Debug.WriteLine($"{_header.BuildMessage()}:{_source.BuildMessage()}:{_body.BuildMessage()}");
+            bool success1 = _header.Tokenize();
+            bool success2 = _source.Tokenize();
+            bool success3 = _body.Tokenize();
 
+            if (success1 && success2 && success3)
+            {
+                Combined = $"{_header.BuildMessage()}:{_source.BuildMessage()}:{_body.BuildMessage()}";
+                return true;
+            }
+            Debug.WriteLine($"Header:{success1}:Source:{success2}:Body:{success3}");
+            return false;
+        }
+
+        public ChatMessage Resolve()
+        {
             // extract data
             this.MessageType = _header.OpCode;
             this.MessageSource = new ChatMessageSource(_source).ResolveSource(this.MessageType);
             this.MessageContent = new ChatMessageContent(_body).ResolveContent(this.MessageType);
-            Debug.WriteLine(JsonSerializer.Serialize(this));
-
-            return success;
+            this.Timestamp = _header.Timestamp;
+            return this;
         }
     }
 }

@@ -14,9 +14,8 @@ namespace Echo.Core.Factory
             long startPos = reader.BaseStream.Position;
             long streamLength = reader.BaseStream.Length;
 
-            byte controlType = reader.ReadByte();
-            //Debug.WriteLine($"Control Token Type: {controlType.ToString("X2")}");
             // read remainder and then seek back to origin
+            byte controlType = reader.ReadByte();
             reader.BaseStream.Seek(-2, SeekOrigin.Current);
             switch(controlType)
             {

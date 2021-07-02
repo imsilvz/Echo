@@ -12,42 +12,51 @@ const styles = theme => ({
     }
 });
 
-const ChatCodeDict = {
+const MessageTypeDict = {
     "0003": {
         Name: "Welcome Message",
-        IsSystem: true,
         Parse: (message) => {
             return (
                 <span style={{
                     color:"#cccccc"
                 }}>
-                    {message.Message}
+                    {message.MessageContent.Message}
                 </span>
             );
         }
     },
     "0039": {
-        Name: "Status Message",
-        IsSystem: true,
+        Name: "System Message",
         Parse: (message) => {
             return (
                 <span style={{
                     color:"#cccccc"
                 }}>
-                    {message.Message}
+                    {message.MessageContent.Message}
+                </span>
+            );
+        }
+    },
+    "0044": {
+        Name: "System Error",
+        Parse: (message) => {
+            return (
+                <span style={{
+
+                }}>
+                    {message.MessageContent.Message}
                 </span>
             );
         }
     },
     "0048": {
-        Name: "System Message",
-        IsSystem: true,
+        Name: "Party Finder Message",
         Parse: (message) => {
             return (
                 <span style={{
                     color:"#cccccc"
                 }}>
-                    {message.Message}
+                    {message.MessageContent.Message}
                 </span>
             );
         }
@@ -56,9 +65,9 @@ const ChatCodeDict = {
         Name: "Say",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return `[SAY] ${name} (${server}): ${msg}`
             }
@@ -69,9 +78,9 @@ const ChatCodeDict = {
         Name: "Shout",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return (
                     <span style={{color:"#ffa666"}}>
@@ -90,9 +99,9 @@ const ChatCodeDict = {
         Name: "Whisper (Outgoing)",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return (
                     <span style={{color:"#ffb8de"}}>
@@ -102,7 +111,7 @@ const ChatCodeDict = {
             }
             return (
                 <span style={{color:"#ffb8de"}}>
-                    {`>>${name}: ${msg}`}
+                    {`>> ${name}: ${msg}`}
                 </span>
             );
         }
@@ -111,9 +120,9 @@ const ChatCodeDict = {
         Name: "Tell (Incoming)",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return (
                     <span style={{color:"#ffb8de"}}>
@@ -132,9 +141,9 @@ const ChatCodeDict = {
         Name: "Novice Network",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return (
                     <span style={{color:"#d4ff7d"}}>
@@ -153,19 +162,10 @@ const ChatCodeDict = {
         Name: "Emote",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
-            let msgText = msg.substring(msg.indexOf(":") + 1);
-            
-            // temporary fix for my emotes!
-            if(name == "") {
-                name = msg.substring(0, msg.indexOf(":"));
-            }
-
+            let msg = message.MessageContent.Message;
             return (
                 <span style={{color:"#bafff0"}}>
-                    {`[EMOTE] ${name} ${msgText}`}
+                    {`[EMOTE] ${msg}`}
                 </span>
             );
         }
@@ -174,37 +174,10 @@ const ChatCodeDict = {
         Name: "Animated Emote",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
-            let msgText = msg.substring(msg.indexOf(":") + 1);
-
-            for(let i=0; i<message.Tokens.length; i++)
-            {
-                let token = message.Tokens[i];
-                // 010101 is the message sender, but that does not matter in these emotes
-                if(token.LinkType && token.LinkType != "01010101")
-                {
-                    // try to correct emote names
-                    if(i+1 < message.Tokens.length)
-                    {
-                        let serverToken = message.Tokens[i+1];
-                        if(serverToken.ServerName)
-                        {
-                            // filter combined out
-                            let combined = token.LinkValue + serverToken.ServerName;
-                            msgText = msgText.replace(
-                                combined, 
-                                `${token.LinkValue} (${serverToken.ServerName})`
-                            );
-                        }
-                    }
-                }
-            }
-
+            let msg = message.MessageContent.Message;
             return (
                 <span style={{color:"#bafff0"}}>
-                    {`[EMOTE] ${msgText}`}
+                    {`[EMOTE] ${msg}`}
                 </span>
             );
         }
@@ -213,9 +186,9 @@ const ChatCodeDict = {
         Name: "Yell",
         IsSystem: false,
         Parse: (message) => {
-            let name = message.PlayerName;
-            let server = message.PlayerServer;
-            let msg = message.Message;
+            let name = message.MessageSource.SourcePlayer;
+            let server = message.MessageSource.SourceServer;
+            let msg = message.MessageContent.Message;
             if(server) {
                 return (
                     <span style={{color:"#ffff00"}}>
@@ -233,9 +206,9 @@ const ChatCodeDict = {
 }
 
 function FormatChatMessage(message) {
-    if(ChatCodeDict.hasOwnProperty(message.Code)) {
+    if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
-        let messageType = ChatCodeDict[message.Code];
+        let messageType = MessageTypeDict[message.MessageType];
         return messageType.Parse(message);
     }
     // default handling
