@@ -25,5 +25,10 @@ namespace Echo
             var wnd = new MainWindow();
             wnd.Show();
         }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("An unhandled exception just occurred: \n" + e.Exception.StackTrace, "Echo - FFXIV Chat Listener", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

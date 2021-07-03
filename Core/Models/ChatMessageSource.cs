@@ -16,12 +16,14 @@ namespace Echo.Core.Models
         public bool IsSystem { get; set; }
         public string SourcePlayer { get; set; }
         public string SourceServer { get; set; }
+        public List<ChatLink> Links { get; set; }
         public List<ChatToken> Tokens { get; set; }
 
         private ChatSegmentToken _segment;
         public ChatMessageSource(ChatSegmentToken token)
         {
             this._segment = token;
+            this.Links = new List<ChatLink>();
             this.Tokens = token.GetTokens();
 
             this.IsBattle = false;
@@ -47,10 +49,22 @@ namespace Echo.Core.Models
                             if(nameToken is ChatTextToken)
                             {
                                 SourcePlayer = ((ChatTextToken)nameToken).GetTokenValue();
+                                Links.Add(new ChatLink
+                                {
+                                    StartIndex = 0,
+                                    Length = SourcePlayer.Length,
+                                    Content = SourcePlayer
+                                });
                             }
                             else if(nameToken is ChatLinkToken)
                             {
                                 SourcePlayer = ((ChatLinkToken)nameToken).GetTokenText();
+                                Links.Add(new ChatLink
+                                {
+                                    StartIndex = 0,
+                                    Length = SourcePlayer.Length,
+                                    Content = SourcePlayer
+                                });
                             }
                             break;
                         case 3:
