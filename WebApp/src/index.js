@@ -49,7 +49,8 @@ const styles = {
         right: "0",
         bottom: "0",
         left: "0",
-        overflow: "hidden"
+        overflow: "hidden",
+        backgroundColor:"rgba(0,0,0,0.5)"
     },
     grip: {
         display: "block",
@@ -64,7 +65,7 @@ const styles = {
 
 class App extends React.Component {
     componentDidMount() {
-
+        chrome.webview.hostObjects.eventForwarder.AppReady();
     }
 
     render() {

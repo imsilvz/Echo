@@ -25,6 +25,7 @@ namespace Echo
             this.Deactivated += MainWindow_Deactivated;
             webView.CoreWebView2InitializationCompleted += WebView_InitializationCompleted;
             webView.NavigationCompleted += WebView_NavigationCompleted;
+            webView.IsHitTestVisible = true;
             InitializeAsync();
         }
 
@@ -54,6 +55,7 @@ namespace Echo
         {
             var dataBroker = DataBroker.Instance;
             var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
+            eventForwarder.OnAppReady += EventForwarder_OnAppReady;
             string preload = LoadResource("Echo.WebApp.dist.preload.js");
 
             webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
@@ -67,6 +69,11 @@ namespace Echo
             // Send React script
             string script = LoadResource("Echo.WebApp.dist.bundle.js");
             webView.ExecuteScriptAsync(script);
+        }
+
+        private void EventForwarder_OnAppReady(object sender)
+        {
+            this.ResizeMode = ResizeMode.CanResizeWithGrip;
         }
 
         private string LoadResource(string name)

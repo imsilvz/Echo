@@ -18,8 +18,10 @@ namespace Echo.Controllers
         [DllImport("user32.dll")]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
+        public delegate void EventForwarderEvent(object sender);
+        public event EventForwarderEvent OnAppReady = delegate { };
+
         readonly IntPtr target;
-        private bool _isResizing = false;
 
         public EventForwarder(IntPtr target)
         {
@@ -29,6 +31,11 @@ namespace Echo.Controllers
         public void Close()
         {
             Application.Current.Shutdown();
+        }
+
+        public void AppReady()
+        {
+            this.OnAppReady?.Invoke(this);
         }
 
         public void MouseDownDrag()

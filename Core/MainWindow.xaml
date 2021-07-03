@@ -8,18 +8,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         AllowsTransparency="True"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="NoResize"
         WindowStyle="None"
+        IsHitTestVisible="True"
 >
-
     <Window.Background>
-        <SolidColorBrush Opacity="0.5" Color="Black"/>
+        <SolidColorBrush Color="#01000000"/>
     </Window.Background>
 
     <DockPanel>
         <wv2:WebView2 
             Name="webView"
             DefaultBackgroundColor="Transparent"
+            IsHitTestVisible="True"
         />
     </DockPanel>
 </Window>

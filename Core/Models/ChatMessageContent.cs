@@ -11,6 +11,7 @@ namespace Echo.Core.Models
     public class ChatMessageContent
     {
         public string Message { get; set; }
+        public List<ChatLink> Links { get; set; }
         public List<ChatToken> Tokens { get; set; }
 
         private ChatSegmentToken _segment;
@@ -18,6 +19,7 @@ namespace Echo.Core.Models
         {
             this._segment = token;
             this.Message = "";
+            this.Links = new List<ChatLink>();
             this.Tokens = token.GetTokens();
         }
 
@@ -43,7 +45,16 @@ namespace Echo.Core.Models
                                 {
                                     // different handling?
                                 }
-                                Message += linkText;
+                                else
+                                {
+                                    Links.Add(new ChatLink
+                                    {
+                                        StartIndex = Message.Length,
+                                        Length = linkText.Length,
+                                        Content = linkText
+                                    });
+                                    Message += linkText;
+                                }
 
                                 List<string> tokenList = new List<string>();
                                 foreach (var t in filtered)
