@@ -11,7 +11,8 @@ using System.Diagnostics;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
-using Echo.Controllers;
+using Echo.Core.Controllers;
+using Echo.SharlayanWrappers;
 namespace Echo
 {
     /// <summary>
@@ -74,6 +75,7 @@ namespace Echo
         private void EventForwarder_OnAppReady(object sender)
         {
             this.ResizeMode = ResizeMode.CanResizeWithGrip;
+            SharlayanWrapper.Instance.Initialize();
         }
 
         private string LoadResource(string name)

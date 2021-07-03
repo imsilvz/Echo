@@ -11,7 +11,7 @@ using Sharlayan.Core;
 using Sharlayan.Enums;
 using Sharlayan.Models;
 using Sharlayan.Models.ReadResults;
-namespace Echo.Controllers
+namespace Echo.Core.Controllers
 {
     public class DataBroker
     {
@@ -23,7 +23,9 @@ namespace Echo.Controllers
         private List<ChatMessage> _chatlog;
         private int _chatlogOffset = 0;
 
-        public DataBroker()
+        public DataBroker() { }
+
+        public void Initialize()
         {
             SetupEventHost();
             _chatlog = new List<ChatMessage>();
