@@ -3,7 +3,7 @@ using System.Windows;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Echo.Controllers
+namespace Echo.Core.Controllers
 {
     public class EventForwarder
     {

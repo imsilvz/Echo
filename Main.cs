@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-using Echo.SharlayanWrappers;
+using Echo.Core.Controllers;
 namespace Echo 
 {
     public class Program 
@@ -13,7 +13,7 @@ namespace Echo
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Directory.CreateDirectory($"{path}/Echo/cache");
 
-            SharlayanWrapper.Instance.Initialize();
+            DataBroker.Instance.Initialize();
             var app = new App();
             app.Run();
         }

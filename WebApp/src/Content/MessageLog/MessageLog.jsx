@@ -198,7 +198,6 @@ class MessageLog extends React.Component
                                     size="small" 
                                     variant="contained"
                                     onClick={() => {
-                                        console.log("Hello World!");
                                         this.scrollToBottom();
                                     }}
                                 >
