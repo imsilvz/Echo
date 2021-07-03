@@ -56,8 +56,6 @@
             this._isScanning = true;
 
             ChatLogResult result = this._memoryHandler.Reader.GetChatLog(this._previousArrayIndex, this._previousOffset);
-            if(result.ChatLogItems.Count > 0) { Debug.WriteLine(result.ChatLogItems.Count);  }
-
             this._previousArrayIndex = result.PreviousArrayIndex;
             this._previousOffset = result.PreviousOffset;
 

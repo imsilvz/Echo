@@ -42,7 +42,7 @@ namespace Echo.Core.Controllers
             _chatlogOffset += update.Length;
 
             // serialize
-            return JsonSerializer.Serialize(update);
+            return JsonSerializer.Serialize(update);    
         }
 
         public string QueryPlayer()

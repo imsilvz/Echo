@@ -12,7 +12,7 @@ const styles = theme => ({
         '& span': {
             display: "inline",
         }
-    }
+    },
 });
 
 const HexToHighlight = function(hexCode, alpha) {
@@ -88,23 +88,103 @@ function LinkHighlight(MessageContent, color="#000000") {
     return collection;
 }
 
-function QuoteHighlight(collection) {
-    for(let i=0; i<collection.length; i++) {
-        let item = collection[i];
-        
-        console.log(item);
-        console.log(typeof(item));
-        if(typeof(item) == "string") {
-            let quotes = [];
-            for(let idx=0; i<item.length; i++) {
-                if(item.charAt(idx) == "\"") {
-                    quotes.push(idx);
+function QuoteHighlight(collection, color, rpChat) {
+    let emoteColor = MessageTypeDict["001C"].Color;
+    let newCollection = [];
+            
+    // find if there are any quotes
+    // do this for rpchat functionality!
+    let hasQuote = false;
+    if(rpChat) {
+        for(let item of collection) {
+            if(typeof(item) == "string") {
+                if(item.includes("\"")) {
+                    hasQuote = true;
+                    break;
                 }
             }
-            console.log(quotes);
         }
     }
-    return collection;
+
+    let inQuote = false;
+    let quoteData = [];
+    for(let item of collection) {
+        if(typeof(item) == "string") {
+            let segments = item.split(/(\")/);
+            for(let idx=0; idx<segments.length; idx++) {
+                // check if segment is a delim
+                if(segments[idx] == "\"") {
+                    if(inQuote) {
+                        // end quote
+                        inQuote = false;
+                        quoteData.push(segments[idx]);
+                        
+                        // add to collection
+                        newCollection.push((
+                            <span style={{color:color}}>
+                                {quoteData}
+                            </span>
+                        ));
+                        quoteData = [];
+                        continue;
+                    }
+                    // start quote
+                    inQuote = true;
+                    quoteData.push(segments[idx]);
+                    continue;
+                }
+        
+                // 
+                if(inQuote) {
+                    // add additional quote data
+                    quoteData.push(segments[idx]);
+                }
+                else
+                {
+                    // add to new collection
+                    if(rpChat && hasQuote) {
+                        newCollection.push((
+                            <span style={{color:emoteColor}}>
+                                {segments[idx]}
+                            </span>
+                        ));
+                    } else {
+                        newCollection.push(segments[idx]);
+                    }
+                }
+            }   
+        } else {
+            // 
+            if(inQuote) {
+                // add additional quote data
+                quoteData.push(item);
+            }
+            else
+            {
+                // add to new collection
+                if(rpChat && hasQuote) {
+                    newCollection.push((
+                        <span style={{color:emoteColor}}>
+                            {item}
+                        </span>
+                    ));
+                } else {
+                    newCollection.push(item);
+                }
+            }
+        }
+    }
+
+    // handle leftover
+    if(inQuote) {
+        newCollection.push((
+            <span style={{color:color}}>
+                {quoteData}
+            </span>
+        ));
+    }
+
+    return newCollection;
 }
 
 const MessageTypeDict = {
@@ -113,10 +193,21 @@ const MessageTypeDict = {
         Color: "#FFFFFF",
         IsSystem: false,
         IsBattle: false,
+        RpChat: false,
         Parse: function(message) {
             let channel = this.Name.toUpperCase();
             let name = message.MessageSource.SourcePlayer;
             let server = message.MessageSource.SourceServer;
+            let linkedMsg = LinkHighlight(
+                message.MessageContent, 
+                this.Color
+            );
+    
+            let collection = QuoteHighlight(
+                linkedMsg,
+                "#ffffff",
+                this.RpChat
+            );
 
             if(name) {
                 name = LinkHighlight({ 
@@ -124,11 +215,6 @@ const MessageTypeDict = {
                     Message: name
                 }, this.Color);
             }
-
-            let collection = LinkHighlight(
-                message.MessageContent, 
-                this.Color
-            );
 
             if(this.IsSystem) {
                 return (
@@ -192,7 +278,10 @@ AddMessageType("0048", {
     Color: "#cccccc",
     IsSystem: true 
 });
-AddMessageType("000A", { Name: "Say" });
+AddMessageType("000A", { 
+    Name: "Say",
+    RpChat: true,
+});
 AddMessageType("000B", { 
     Name: "Shout",
     Color: "#ffa666"
@@ -203,9 +292,14 @@ AddMessageType("000C", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = LinkHighlight(
+        let linkedMsg = LinkHighlight(
             message.MessageContent, 
             this.Color
+        );
+
+        let msg = QuoteHighlight(
+            linkedMsg,
+            "#ffffff"
         );
         
         if(name) {
@@ -241,9 +335,14 @@ AddMessageType("000D", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = LinkHighlight(
+        let linkedMsg = LinkHighlight(
             message.MessageContent, 
             this.Color
+        );
+
+        let msg = QuoteHighlight(
+            linkedMsg,
+            "#ffffff"
         );
         
         if(name) {
@@ -281,11 +380,15 @@ AddMessageType("001C", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = LinkHighlight(
+        let linkedMsg = LinkHighlight(
             message.MessageContent, 
             this.Color
         );
-        msg = QuoteHighlight(msg);
+
+        let msg = QuoteHighlight(
+            linkedMsg,
+            "#ffffff"
+        );
         
         if(name) {
             name = LinkHighlight({ 
@@ -318,9 +421,14 @@ AddMessageType("001D", {
     Name: "Animated Emote",
     Color: "#bafff0",
     Parse: function(message) {
-        let msg = LinkHighlight(
+        let linkedMsg = LinkHighlight(
             message.MessageContent, 
             this.Color
+        );
+
+        let msg = QuoteHighlight(
+            linkedMsg,
+            "#ffffff"
         );
         return (
             <span style={{color:this.Color}}>
