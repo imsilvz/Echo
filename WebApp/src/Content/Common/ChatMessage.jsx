@@ -2,6 +2,7 @@ import React from "react";
 import { withStyles } from '@material-ui/styles';
 
 import ChatLink from './ChatLink';
+import ChatQuote from './ChatQuote';
 
 const styles = theme => ({
     chatMessage: {
@@ -38,14 +39,13 @@ function LinkHighlight(MessageContent, color="#000000") {
     let message = MessageContent.Message;
     let links = MessageContent.Links;
     
-    let collection = [];
-    
     // no links in the message!
     if(!links.length) {
         return [MessageContent.Message];
     }
 
     // push initial substring
+    let collection = [];
     collection.push(
         message.substr(
             0, 
@@ -89,7 +89,22 @@ function LinkHighlight(MessageContent, color="#000000") {
 }
 
 function QuoteHighlight(collection) {
-
+    for(let i=0; i<collection.length; i++) {
+        let item = collection[i];
+        
+        console.log(item);
+        console.log(typeof(item));
+        if(typeof(item) == "string") {
+            let quotes = [];
+            for(let idx=0; i<item.length; i++) {
+                if(item.charAt(idx) == "\"") {
+                    quotes.push(idx);
+                }
+            }
+            console.log(quotes);
+        }
+    }
+    return collection;
 }
 
 const MessageTypeDict = {
@@ -102,7 +117,13 @@ const MessageTypeDict = {
             let channel = this.Name.toUpperCase();
             let name = message.MessageSource.SourcePlayer;
             let server = message.MessageSource.SourceServer;
-            let msgText = message.MessageContent.Message;
+
+            if(name) {
+                name = LinkHighlight({ 
+                    Links: [{ StartIndex: 0, Length: name?.length }],
+                    Message: name
+                }, this.Color);
+            }
 
             let collection = LinkHighlight(
                 message.MessageContent, 
@@ -119,14 +140,18 @@ const MessageTypeDict = {
                 if(server) {
                     return (
                         <span style={{color:this.Color}}>
-                            {`[${channel}] ${name} (${server}): `}
+                            {`[${channel}] `}
+                            {name}
+                            {` (${server}): `}
                             {collection}
                         </span>
                     )
                 }
                 return (
                     <span style={{color:this.Color}}>
-                        {`[${channel}] ${name}: `}
+                        {`[${channel}] `}
+                        {name}
+                        {": "}
                         {collection}   
                     </span>
                 )
@@ -174,40 +199,74 @@ AddMessageType("000B", {
 });
 AddMessageType("000C", {
     Name: "Tell (Outgoing)",
-    Parse: (message) => {
+    Color: "#ffb8de",
+    Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = message.MessageContent.Message;
+        let msg = LinkHighlight(
+            message.MessageContent, 
+            this.Color
+        );
+        
+        if(name) {
+            name = LinkHighlight({ 
+                Links: [{ StartIndex: 0, Length: name?.length }],
+                Message: name
+            }, this.Color);
+        }
+
         if(server) {
             return (
-                <span style={{color:"#ffb8de"}}>
-                    {`>> ${name} (${server}): ${msg}`}
+                <span style={{color:this.Color}}>
+                    {">> "}
+                    {name}
+                    {` (${server}): `}
+                    {msg}
                 </span>
             );
         }
         return (
-            <span style={{color:"#ffb8de"}}>
-                {`>> ${name}: ${msg}`}
+            <span style={{color:this.Color}}>
+                {">> "}
+                {name}
+                {": "}
+                {msg}
             </span>
         );
     }
 });
 AddMessageType("000D", {
     Name: "Tell (Incoming)",
-    Parse: (message) => {
+    Color: "#ffb8de",
+    Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = message.MessageContent.Message;
+        let msg = LinkHighlight(
+            message.MessageContent, 
+            this.Color
+        );
+        
+        if(name) {
+            name = LinkHighlight({ 
+                Links: [{ StartIndex: 0, Length: name?.length }],
+                Message: name
+            }, this.Color);
+        }
+
         if(server) {
             return (
-                <span style={{color:"#ffb8de"}}>
-                    {`${name} (${server}) >> ${msg}`}
+                <span style={{color:this.Color}}>
+                    {name}
+                    {` (${server}) >> `}
+                    {msg}
                 </span>
             );
         }
         return (
-            <span style={{color:"#ffb8de"}}>
-                {`${name} >> ${msg}`}
+            <span style={{color:this.Color}}>
+                {name}
+                {" >> "}
+                {msg}
             </span>
         );
     }
@@ -218,31 +277,55 @@ AddMessageType("001B", {
 });
 AddMessageType("001C", {
     Name: "Emote",
-    Parse: (message) => {
+    Color: "#bafff0",
+    Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
-        let msg = message.MessageContent.Message;
+        let msg = LinkHighlight(
+            message.MessageContent, 
+            this.Color
+        );
+        msg = QuoteHighlight(msg);
+        
+        if(name) {
+            name = LinkHighlight({ 
+                Links: [{ StartIndex: 0, Length: name?.length }],
+                Message: name
+            }, this.Color);
+        }
+
         if(server) {
             return (
-                <span style={{color:"#bafff0"}}>
-                    {`[EMOTE] ${name} (${server}) ${msg}`}
+                <span style={{color:this.Color}}>
+                    {"[EMOTE] "}
+                    {name}
+                    {` (${server}) `}
+                    {msg}
                 </span>
             );
         }
         return (
-            <span style={{color:"#bafff0"}}>
-                {`[EMOTE] ${name} ${msg}`}
+            <span style={{color:this.Color}}>
+                {"[EMOTE] "}
+                {name}
+                {" "}
+                {msg}
             </span>
         );
     }
 });
 AddMessageType("001D", {
     Name: "Animated Emote",
-    Parse: (message) => {
-        let msg = message.MessageContent.Message;
+    Color: "#bafff0",
+    Parse: function(message) {
+        let msg = LinkHighlight(
+            message.MessageContent, 
+            this.Color
+        );
         return (
-            <span style={{color:"#bafff0"}}>
-                {`[EMOTE] ${msg}`}
+            <span style={{color:this.Color}}>
+                {`[EMOTE] `}
+                {msg}
             </span>
         );
     }
