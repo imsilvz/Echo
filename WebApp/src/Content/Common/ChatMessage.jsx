@@ -530,7 +530,6 @@ function FormatChatMessage(message) {
 const ChatMessage = (props) => {
     const { classes, message } = props;
     let formatted = FormatChatMessage(message);
-    console.log(formatted);
     return (
         <p className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {
