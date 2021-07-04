@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using Echo.Core.Models;
 using Echo.SharlayanWrappers;
@@ -21,6 +22,7 @@ namespace Echo.Core.Controllers
         private ActorItem _lastPlayerData;
         private TargetInfo _lastTargetData;
         private List<ChatMessage> _chatlog;
+        private ConcurrentDictionary<uint, ActorData> _actorDataDict;
         private int _chatlogOffset = 0;
 
         public DataBroker() { }
@@ -29,6 +31,22 @@ namespace Echo.Core.Controllers
         {
             SetupEventHost();
             _chatlog = new List<ChatMessage>();
+            _actorDataDict = new ConcurrentDictionary<uint, ActorData>();
+        }
+
+        public string QueryActors()
+        {
+            var actorDict = _actorDataDict.Values;
+            List<ActorData> updates = new List<ActorData>();
+            foreach(var actor in actorDict)
+            {
+                if(actor.GetUpdate())
+                {
+                    updates.Add(actor);
+                    actor.SetUpdate(false);
+                }
+            }
+            return JsonSerializer.Serialize(updates);
         }
 
         public string QueryChat()
@@ -67,9 +85,42 @@ namespace Echo.Core.Controllers
 
         private void SetupEventHost()
         {
+            EventHost.Instance.OnNewPCActorItems += this.SharlayanEvent_OnActorUpdate;
             EventHost.Instance.OnNewChatLogItem += this.SharlayanEvent_OnChatUpdate;
             EventHost.Instance.OnNewCurrentUser += this.SharlayanEvent_OnPlayerUpdate;
             EventHost.Instance.OnNewTargetInfo += this.SharlayanEvent_OnTargetUpdate;
+        }
+
+        private void SharlayanEvent_OnActorUpdate(object? sender, MemoryHandler memoryHandler, ConcurrentDictionary<uint, ActorItem> actorDict)
+        {
+            KeyValuePair<uint, ActorItem>[] actors = actorDict.ToArray();
+            foreach(var kvp in actors)
+            {
+                ActorData data;
+                ActorItem val = kvp.Value;
+                if(_actorDataDict.TryGetValue(kvp.Key, out data))
+                {
+                    // found key
+                    if(data.Name != val.Name || data.Job != val.Job)
+                    {
+                        // updated!
+                        data.Name = val.Name;
+                        data.Job = val.Job;
+                        data.SetUpdate(true);
+                    }
+                }
+                else
+                {
+                    data = new ActorData
+                    {
+                        ID = val.ID,
+                        Name = val.Name,
+                        Job = val.Job,
+                    };
+                    data.SetUpdate(true);
+                    _actorDataDict.TryAdd(kvp.Key, data);
+                }
+            }
         }
 
         private void SharlayanEvent_OnChatUpdate(object? sender, MemoryHandler memoryHandler, ChatLogItem chatLogItem)

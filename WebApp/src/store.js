@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 
 let initialState = {
+    actors: {},
     chatlog: [],
     playerinfo: {
         ID: null,
@@ -12,6 +13,14 @@ let initialState = {
 
 function storeReducer(state=initialState, action) {
     switch(action.type) {
+        case 'UPDATE_ACTORS':
+            return {
+                ...state,
+                actors: {
+                    ...state.actors,
+                    ...action.actors
+                }
+            }
         case 'UPDATE_CHAT':
             return {
                 ...state,

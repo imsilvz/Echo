@@ -12,36 +12,10 @@ class DataBroker extends React.Component
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
         let interval = setInterval(async () => {
-            let chatMsg = await chrome.webview.hostObjects.dataBroker.QueryChat();
-            let playerMsg = await chrome.webview.hostObjects.dataBroker.QueryPlayer();
-
-            // parse chat update
-            let update = false;
-            let chat = JSON.parse(chatMsg);
-            let player = JSON.parse(playerMsg);
-
-            // chat messages!
-            let newMessages = [];
-            if(chat.length) {
-                update = true;
-                for(let i=0; i<chat.length; i++) {
-                    let message = chat[i];
-                    console.log(message);
-                    newMessages.push(
-                        message
-                    );
-                }
-                dispatch({
-                    type: "UPDATE_CHAT",
-                    chat: newMessages
-                });
-            }
-            dispatch({
-                type: "UPDATE_PLAYER",
-                data: player
-            });
+            this.updateActorData();
+            this.updateChatData();
+            this.updatePlayerData();
         }, 100);
         this.setState({
             intervalId: interval
@@ -53,6 +27,61 @@ class DataBroker extends React.Component
         if(intervalId) {
             clearInterval(intervalId);
         }
+    }
+
+    async updateActorData() {
+        const { dispatch } = this.props;
+        let broker = chrome.webview.hostObjects.dataBroker;
+        let actorData = await broker.QueryActors();
+        let actors = JSON.parse(actorData);
+
+        if(actors.length) {
+            let actorUpdate = {};
+            for(let i=0; i<actors.length; i++) {
+                actorUpdate[actors[i].Name] = actors[i];
+            }
+            console.log(actorUpdate);
+            dispatch({
+                type: "UPDATE_ACTORS",
+                actors: actorUpdate
+            });
+        }
+    }
+
+    async updateChatData() {
+        const { dispatch } = this.props;
+        let broker = chrome.webview.hostObjects.dataBroker;
+        let chatData = await broker.QueryChat();
+        let messages = JSON.parse(chatData);
+
+        let newMessages = [];
+        if(messages.length) {
+            for(let i=0; i<messages.length; i++) {
+                let message = messages[i];
+                console.log(message);
+                newMessages.push(
+                    message
+                );
+            }
+            dispatch({
+                type: "UPDATE_CHAT",
+                chat: newMessages
+            });
+        }
+    }
+
+    async updatePlayerData() {
+        const { dispatch } = this.props;
+        let broker = chrome.webview.hostObjects.dataBroker;
+        let playerData = await broker.QueryPlayer();
+
+        // parse chat update
+        let player = JSON.parse(playerData);
+
+        dispatch({
+            type: "UPDATE_PLAYER",
+            data: player
+        });
     }
 
     render() {
