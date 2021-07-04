@@ -449,6 +449,7 @@ AddMessageType("001E", {
 });
 
 function FormatChatMessage(message) {
+    console.log("Hello World");
     if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
         let messageType = MessageTypeDict[message.MessageType];
@@ -459,10 +460,17 @@ function FormatChatMessage(message) {
 }
 
 const ChatMessage = (props) => {
-    const { classes, message } = props;
+    const { classes, childkey, message } = props;
     let formatted = FormatChatMessage(message);
     return (
-        <p className={classes.chatMessage}>{formatted}</p>
+        <p className={classes.chatMessage}>
+            {React.Children.map(formatted, (child, i) => {
+                if(typeof(child) == "string") {
+                    return child;
+                }
+                return React.cloneElement(child, { key: `${childkey}_${i}` })
+            })}
+        </p>
     );
 }
 export default withStyles(styles, { withTheme: true })(ChatMessage);

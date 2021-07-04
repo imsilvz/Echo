@@ -40,7 +40,6 @@ class DataBroker extends React.Component
             for(let i=0; i<actors.length; i++) {
                 actorUpdate[actors[i].Name] = actors[i];
             }
-            console.log(actorUpdate);
             dispatch({
                 type: "UPDATE_ACTORS",
                 actors: actorUpdate
@@ -58,7 +57,6 @@ class DataBroker extends React.Component
         if(messages.length) {
             for(let i=0; i<messages.length; i++) {
                 let message = messages[i];
-                console.log(message);
                 newMessages.push(
                     message
                 );
