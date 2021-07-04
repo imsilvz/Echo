@@ -185,7 +185,7 @@ class MessageLog extends React.Component
                 <div className={classes.messageContainer}>
                     {Messages.map((item, idx) => {
                         return (
-                            <ChatMessage key={idx} childkey={idx} message={item}/>
+                            <ChatMessage key={item.UUID} message={item}/>
                         );
                     })}
                     <div className={classes.messageEnd} ref={this.messageEndRef}/>

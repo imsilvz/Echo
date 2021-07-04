@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 
-const ChatQuote = (props) => {
-    const { color, content, uuid } = props;
+const ChatContent = (props) => {
+    const { content, uuid } = props;
 
     let renderContent = content;
     if(!!!Array.isArray(content)) {
@@ -10,7 +10,7 @@ const ChatQuote = (props) => {
     }
 
     return (
-        <span style={{color:color}}>
+        <React.Fragment>
             {renderContent.map((item, idx) => {
                 if(typeof(item) == "string") {
                     return (
@@ -23,7 +23,7 @@ const ChatQuote = (props) => {
                     item, { key: `${uuid}_${idx}`}
                 );
             })}
-        </span>
+        </React.Fragment>
     );
 }
-export default ChatQuote;
+export default ChatContent;

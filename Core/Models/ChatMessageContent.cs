@@ -49,6 +49,7 @@ namespace Echo.Core.Models
                                 {
                                     Links.Add(new ChatLink
                                     {
+                                        UUID = $"ChatLink_{Guid.NewGuid()}",
                                         StartIndex = Message.Length,
                                         Length = linkText.Length,
                                         Content = linkText

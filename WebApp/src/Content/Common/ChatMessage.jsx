@@ -1,6 +1,7 @@
 import React from "react";
 import { withStyles } from '@material-ui/styles';
 
+import ChatContent from './ChatContent';
 import ChatLink from './ChatLink';
 import ChatQuote from './ChatQuote';
 
@@ -39,7 +40,7 @@ const HexToHighlight = function(hexCode, alpha) {
     return `rgba(${aRgb[0]},${aRgb[1]},${aRgb[2]},${alpha})`;
 }
 
-function LinkHighlight(MessageContent, color="#000000") {
+function LinkHighlight(MessageContent, color="#000000", key) {
     let highlightColor = HexToHighlight(color, 0.2);
     let message = MessageContent.Message;
     let links = MessageContent.Links;
@@ -67,8 +68,12 @@ function LinkHighlight(MessageContent, color="#000000") {
         );
 
         // add link to collection
+        let linkKey = key ? 
+            `${key}_${i}` : 
+            `${link.UUID}_${i}`;
         collection.push(
             <ChatLink
+                key={linkKey}
                 color={highlightColor}
                 content={content}
             />
@@ -93,7 +98,7 @@ function LinkHighlight(MessageContent, color="#000000") {
     return collection;
 }
 
-function QuoteHighlight(collection, color, rpChat) {
+function QuoteHighlight(message, collection, color, rpChat) {
     let emoteColor = MessageTypeDict["001C"].Color;
     let newCollection = [];
             
@@ -111,6 +116,11 @@ function QuoteHighlight(collection, color, rpChat) {
         }
     }
 
+    // no highlighting to be done
+    if(!hasQuote) { return collection; }
+    let baseKey = `${message.UUID}_Quote`
+    let quoteCounter = 0;
+
     let inQuote = false;
     let quoteData = [];
     for(let item of collection) {
@@ -126,9 +136,11 @@ function QuoteHighlight(collection, color, rpChat) {
                         
                         // add to collection
                         newCollection.push((
-                            <span style={{color:color}}>
-                                {quoteData}
-                            </span>
+                            <ChatQuote 
+                                color={color} 
+                                content={quoteData}
+                                uuid={`${baseKey}_${quoteCounter++}`}
+                            />
                         ));
                         quoteData = [];
                         continue;
@@ -147,11 +159,13 @@ function QuoteHighlight(collection, color, rpChat) {
                 else
                 {
                     // add to new collection
-                    if(rpChat && hasQuote) {
+                    if(rpChat) {
                         newCollection.push((
-                            <span style={{color:emoteColor}}>
-                                {segments[idx]}
-                            </span>
+                            <ChatQuote
+                                color={emoteColor}
+                                content={segments[idx]}
+                                uuid={`${baseKey}_${quoteCounter++}`}
+                            />
                         ));
                     } else {
                         newCollection.push(segments[idx]);
@@ -167,11 +181,13 @@ function QuoteHighlight(collection, color, rpChat) {
             else
             {
                 // add to new collection
-                if(rpChat && hasQuote) {
+                if(rpChat) {
                     newCollection.push((
-                        <span style={{color:emoteColor}}>
-                            {item}
-                        </span>
+                        <ChatQuote
+                            color={emoteColor}
+                            content={item}
+                            uuid={`${baseKey}_${quoteCounter++}`}
+                        />
                     ));
                 } else {
                     newCollection.push(item);
@@ -183,9 +199,10 @@ function QuoteHighlight(collection, color, rpChat) {
     // handle leftover
     if(inQuote) {
         newCollection.push((
-            <span style={{color:color}}>
-                {quoteData}
-            </span>
+            <ChatQuote
+                color={color}
+                content={quoteData}
+            />
         ));
     }
 
@@ -209,22 +226,31 @@ const MessageTypeDict = {
             );
     
             let collection = QuoteHighlight(
+                message,
                 linkedMsg,
                 "#ffffff",
                 this.RpChat
             );
 
+            let content = (
+                <ChatContent
+                    key={`${message.UUID}_Content`}
+                    uuid={`${message.UUID}_Content`}
+                    content={collection}
+                />
+            );
+
             if(name) {
                 name = LinkHighlight({ 
                     Links: [{ StartIndex: 0, Length: name?.length }],
-                    Message: name
-                }, this.Color);
+                    Message: name,
+                }, this.Color, `${message.UUID}_Source`);
             }
 
             if(this.IsSystem) {
                 return (
                     <span style={{color:this.Color}}>
-                        {collection}
+                        {content}
                     </span>
                 );
             } else {
@@ -234,7 +260,7 @@ const MessageTypeDict = {
                             {`[${channel}] `}
                             {name}
                             {` (${server}): `}
-                            {collection}
+                            {content}
                         </span>
                     )
                 }
@@ -243,7 +269,7 @@ const MessageTypeDict = {
                         {`[${channel}] `}
                         {name}
                         {": "}
-                        {collection}   
+                        {content}   
                     </span>
                 )
             }
@@ -303,15 +329,25 @@ AddMessageType("000C", {
         );
 
         let msg = QuoteHighlight(
+            message,
             linkedMsg,
-            "#ffffff"
+            "#ffffff",
+            this.RpChat
+        );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={msg}
+            />
         );
         
         if(name) {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color);
+            }, this.Color, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -346,15 +382,25 @@ AddMessageType("000D", {
         );
 
         let msg = QuoteHighlight(
+            message,
             linkedMsg,
-            "#ffffff"
+            "#ffffff",
+            this.RpChat
+        );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={msg}
+            />
         );
         
         if(name) {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color);
+            }, this.Color, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -362,7 +408,7 @@ AddMessageType("000D", {
                 <span style={{color:this.Color}}>
                     {name}
                     {` (${server}) >> `}
-                    {msg}
+                    {content}
                 </span>
             );
         }
@@ -370,7 +416,7 @@ AddMessageType("000D", {
             <span style={{color:this.Color}}>
                 {name}
                 {" >> "}
-                {msg}
+                {content}
             </span>
         );
     }
@@ -382,6 +428,7 @@ AddMessageType("001B", {
 AddMessageType("001C", {
     Name: "Emote",
     Color: "#bafff0",
+    RpChat: true,
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -391,15 +438,25 @@ AddMessageType("001C", {
         );
 
         let msg = QuoteHighlight(
+            message,
             linkedMsg,
-            "#ffffff"
+            "#ffffff",
+            this.RpChat
+        );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={msg}
+            />
         );
         
         if(name) {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color);
+            }, this.Color, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -408,7 +465,7 @@ AddMessageType("001C", {
                     {"[EMOTE] "}
                     {name}
                     {` (${server}) `}
-                    {msg}
+                    {content}
                 </span>
             );
         }
@@ -417,7 +474,7 @@ AddMessageType("001C", {
                 {"[EMOTE] "}
                 {name}
                 {" "}
-                {msg}
+                {content}
             </span>
         );
     }
@@ -425,6 +482,7 @@ AddMessageType("001C", {
 AddMessageType("001D", {
     Name: "Animated Emote",
     Color: "#bafff0",
+    RpChat: true,
     Parse: function(message) {
         let linkedMsg = LinkHighlight(
             message.MessageContent, 
@@ -432,13 +490,24 @@ AddMessageType("001D", {
         );
 
         let msg = QuoteHighlight(
+            message,
             linkedMsg,
-            "#ffffff"
+            "#ffffff",
+            this.RpChat
         );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={msg}
+            />
+        );
+
         return (
             <span style={{color:this.Color}}>
                 {`[EMOTE] `}
-                {msg}
+                {content}
             </span>
         );
     }
@@ -449,7 +518,6 @@ AddMessageType("001E", {
 });
 
 function FormatChatMessage(message) {
-    console.log("Hello World");
     if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
         let messageType = MessageTypeDict[message.MessageType];
@@ -460,15 +528,23 @@ function FormatChatMessage(message) {
 }
 
 const ChatMessage = (props) => {
-    const { classes, childkey, message } = props;
+    const { classes, message } = props;
     let formatted = FormatChatMessage(message);
+    console.log(formatted);
     return (
         <p className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {
                 if(typeof(child) == "string") {
-                    return child;
+                    return (
+                        <React.Fragment key={`${message.UUID}_${i}`}>
+                            {child}
+                        </React.Fragment>
+                    );
                 }
-                return React.cloneElement(child, { key: `${childkey}_${i}` })
+                let el = React.cloneElement(child, { 
+                    key: `${message.UUID}_${i}`,
+                });
+                return el;
             })}
         </p>
     );
