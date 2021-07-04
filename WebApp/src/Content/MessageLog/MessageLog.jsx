@@ -84,12 +84,16 @@ class MessageLog extends React.Component
             smartScrollTop: true,
             smartScrollBot: true,
         }
+    }
 
+    componentDidMount() {
+        this.scrollToBottom("auto");
+        
         // observers to report on intersections
         const observerSettings = {
             root: null,
             rootMargin: "0px",
-            threshold:1
+            threshold: 1
         }
 
         // two observers, as the callback only reports changed state
@@ -99,18 +103,17 @@ class MessageLog extends React.Component
                 smartScrollTop: entry.isIntersecting
             });
         }, observerSettings);
+
         const botObserver = new IntersectionObserver((entries) => {
             const [ entry ] = entries;
             this.setState({
                 smartScrollBot: entry.isIntersecting
             });
         }, observerSettings);
+
         this.TopScrollObserver = topObserver;
         this.BottomScrollObserver = botObserver;
-    }
 
-    componentDidMount() {
-        this.scrollToBottom("auto");
         if(this.messageEndRef.current) {
             this.BottomScrollObserver.observe(
                 this.messageEndRef.current
@@ -179,37 +182,37 @@ class MessageLog extends React.Component
                 className={classes.messagePanel} 
                 ref={this.messagePanelRef}
             >
-                { Messages.length > 0 ? (
-                    <React.Fragment>
-                        <div className={classes.messageContainer}>
-                            {Messages.map((item, idx) => {
-                                return (
-                                    <ChatMessage key={idx} message={item}/>
-                                );
-                            })}
-                            <div className={classes.messageEnd} ref={this.messageEndRef}/>
-                            <div className={classes.messageEnd} style={{top: -panelHeight}} ref={this.messageEndRef2}/>
-                        </div>
-                        {!!!(smartScrollTop || smartScrollBot) && (
-                            <div className={classes.scrollCatchup}>
-                                <Button 
-                                    className={classes.scrollButton}
-                                    endIcon={<ArrowDownwardIcon/>} 
-                                    size="small" 
-                                    variant="contained"
-                                    onClick={() => {
-                                        this.scrollToBottom();
-                                    }}
-                                >
-                                    Jump to Present
-                                </Button>
-                            </div>
-                        )}
-                    </React.Fragment>
-                ) : (
+                <div className={classes.messageContainer}>
+                    {Messages.map((item, idx) => {
+                        return (
+                            <ChatMessage key={idx} message={item}/>
+                        );
+                    })}
+                    <div className={classes.messageEnd} ref={this.messageEndRef}/>
+                    <div className={classes.messageEnd} style={{top: -panelHeight}} ref={this.messageEndRef2}/>
+                </div>
+                { Messages.length <= 0 ? (
                     <div className={classes.messageCentered}>
                         <p>{EmptyMessage}</p>
                     </div>
+                ) : (
+                    <React.Fragment>
+                    {!!!(smartScrollTop || smartScrollBot) && (
+                        <div className={classes.scrollCatchup}>
+                            <Button 
+                                className={classes.scrollButton}
+                                endIcon={<ArrowDownwardIcon/>} 
+                                size="small" 
+                                variant="contained"
+                                onClick={() => {
+                                    this.scrollToBottom();
+                                }}
+                            >
+                                Jump to Present
+                            </Button>
+                        </div>
+                    )}
+                    </React.Fragment>
                 )}
             </div>
         )

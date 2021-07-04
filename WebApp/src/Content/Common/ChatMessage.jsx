@@ -7,8 +7,13 @@ import ChatQuote from './ChatQuote';
 const styles = theme => ({
     chatMessage: {
         margin:0,
-        fontSize:"1rem",
-        textShadow: "0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black",
+        fontSize:"18px",
+        fontWeight:"400",
+        textShadow: `
+        -1px -1px 0 black,  
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black`,
         '& span': {
             display: "inline",
         }
