@@ -37,7 +37,7 @@ namespace Echo.Core.Enum.FFXIV
         SystemMessage       = 0x0039,
         SystemError         = 0x0044,
         PartyFinderMessage  = 0x0048,
-        PlayerLevelUp       = 0x2040,
+        PlayerLevelUp       = 0x2040, // level up or achievement
     }
 
     public enum BattleChatType : ushort
