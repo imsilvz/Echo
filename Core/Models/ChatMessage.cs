@@ -11,6 +11,7 @@ namespace Echo.Core.Models
 {
     public class ChatMessage
     {
+        public string UUID { get; set; }
         public string MessageType { get; set; }
         public string Combined { get; set; }
         public DateTime Timestamp { get; set; }
@@ -26,6 +27,7 @@ namespace Echo.Core.Models
         public ChatMessage(byte[] bytes)
         {
             _bytes = bytes;
+            UUID = $"Message_{Guid.NewGuid()}";
         }
 
         public bool Tokenize()

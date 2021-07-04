@@ -23,7 +23,7 @@ function useHover(ref) {
 }
 
 const ChatLink = (props) => {
-    const { color, content } = props;
+    const { color, content, childkey } = props;
     const linkRef = React.useRef(null);
     const isHover = useHover(linkRef);
 
@@ -34,7 +34,15 @@ const ChatLink = (props) => {
 
     return (
         <span style={style} ref={linkRef}>
-            {content}
+        {React.Children.map(content, (child, i) => {
+            if(typeof(child) == "string") {
+                return child;
+            }
+            return React.cloneElement(child, { 
+                key: `${childkey}_${i}`,
+                childkey: `${childkey}_${i}`
+            });
+        })}
         </span>
     );
 }

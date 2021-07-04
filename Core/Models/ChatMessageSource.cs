@@ -51,6 +51,7 @@ namespace Echo.Core.Models
                                 SourcePlayer = ((ChatTextToken)nameToken).GetTokenValue();
                                 Links.Add(new ChatLink
                                 {
+                                    UUID = $"ChatLink_{Guid.NewGuid()}",
                                     StartIndex = 0,
                                     Length = SourcePlayer.Length,
                                     Content = SourcePlayer
@@ -61,6 +62,7 @@ namespace Echo.Core.Models
                                 SourcePlayer = ((ChatLinkToken)nameToken).GetTokenText();
                                 Links.Add(new ChatLink
                                 {
+                                    UUID = $"ChatLink_{Guid.NewGuid()}",
                                     StartIndex = 0,
                                     Length = SourcePlayer.Length,
                                     Content = SourcePlayer
