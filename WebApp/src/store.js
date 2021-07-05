@@ -8,11 +8,22 @@ let initialState = {
         Name: "",
         TargetID: null,
         TargetName: ""
-    }
+    },
+    settings: {}
 }
 
 function storeReducer(state=initialState, action) {
     switch(action.type) {
+        case 'LOAD_SETTINGS':
+            console.log(action);
+            let newState = {
+                ...state,
+                settings: {
+                    ...action.data,
+                }
+            }
+            console.log(newState);
+            return newState;
         case 'UPDATE_ACTORS':
             return {
                 ...state,
@@ -47,4 +58,13 @@ function storeReducer(state=initialState, action) {
 }
 
 const store = createStore(storeReducer);
+store.dispatch({
+    type: "LOAD_SETTINGS",
+    data: (() => {
+        let hostObjects = chrome.webview.hostObjects;
+        let controller = hostObjects.sync.settingsController;
+        let settingsJson = controller.GetSettingsJson();
+        return JSON.parse(settingsJson);
+    })()
+});
 export default store;
