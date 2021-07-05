@@ -3,6 +3,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 
+import ChatHighlight from './ChatHighlight';
+
 import HexToHighlight from "../../Util/highlight";
 
 const PlayerJobs = {}
@@ -248,12 +250,13 @@ const ChatLink = (props) => {
         backgroundColor: isHover ? color : "transparent"
     }
 
+    let chatColor = null;
     if(isPlayer) {
         console.log(isPlayer);
         let struct = PlayerJobs[isPlayer.Job];
         if(struct && struct.Color) {
+            chatColor = struct.Color;
             let highlight = HexToHighlight(struct.Color, 0.2);
-            style.color = struct.Color;
             style.backgroundColor = isHover 
                 ? highlight : "transparent"
         }
@@ -272,36 +275,53 @@ const ChatLink = (props) => {
     const handleClose = () => {
         setState(initialState);
     };
+    
+    let menuComponent = (
+        <Menu
+            open={state.mouseY !== null}
+            onClose={handleClose}
+            anchorReference="anchorPosition"
+            anchorPosition={
+                state.mouseY !== null && state.mouseX !== null
+                    ? { top: state.mouseY, left: state.mouseX }
+                    : undefined
+            }
+        >
+            <MenuItem onClick={handleClose}>Test1</MenuItem>
+            <MenuItem onClick={handleClose}>Test2</MenuItem>
+            <MenuItem onClick={handleClose}>Test3</MenuItem>
+        </Menu>
+    );
 
+    if(isPlayer) {
+        return (
+            <ChatHighlight
+                color={chatColor}
+                content={content}
+                style={style} 
+                ref={linkRef}
+                onContextMenu={handleClick}
+            >
+                {menuComponent}
+            </ChatHighlight>
+        )
+    }
     return (
         <span 
             style={style} 
             ref={linkRef}
             onContextMenu={handleClick}
         >
-        {React.Children.map(content, (child, i) => {
-            if(typeof(child) == "string") {
-                return child;
-            }
-            return React.cloneElement(child, { 
-                key: `${uuid}_${i}`,
-                childkey: `${uuid}_${i}`
-            });
-        })}
-            <Menu
-                open={state.mouseY !== null}
-                onClose={handleClose}
-                anchorReference="anchorPosition"
-                anchorPosition={
-                    state.mouseY !== null && state.mouseX !== null
-                        ? { top: state.mouseY, left: state.mouseX }
-                        : undefined
+            {React.Children.map(content, (child, i) => {
+                if(typeof(child) == "string") {
+                    return child;
                 }
-            >
-                <MenuItem onClick={handleClose}>Test1</MenuItem>
-                <MenuItem onClick={handleClose}>Test2</MenuItem>
-                <MenuItem onClick={handleClose}>Test3</MenuItem>
-            </Menu>
+                return React.cloneElement(child, { 
+                    key: `${uuid}_${i}`,
+                    childkey: `${uuid}_${i}`
+                });
+            })}        
+            {menuComponent}
         </span>
     );
 }
