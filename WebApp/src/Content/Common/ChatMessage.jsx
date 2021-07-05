@@ -518,6 +518,7 @@ AddMessageType("001E", {
 });
 
 function FormatChatMessage(message) {
+    console.log(message);
     if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
         let messageType = MessageTypeDict[message.MessageType];
@@ -548,4 +549,6 @@ const ChatMessage = (props) => {
         </p>
     );
 }
-export default withStyles(styles, { withTheme: true })(ChatMessage);
+export default React.memo(
+    withStyles(styles, { withTheme: true })(ChatMessage)
+);
