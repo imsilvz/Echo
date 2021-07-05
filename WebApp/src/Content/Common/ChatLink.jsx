@@ -10,10 +10,10 @@ function AddJobInfo(dataLst) {
     for(let i=0; i<dataLst.length; i++) {
         let data = dataLst[i];
         let JobInfo = {}
-        if(data.BaseClass) {
+        if(data.BaseJob) {
             Object.assign(
                 JobInfo, 
-                PlayerJobs[data.BaseClass]
+                PlayerJobs[data.BaseJob]
             );
         }
         Object.assign(JobInfo, data);
@@ -305,4 +305,4 @@ const ChatLink = (props) => {
         </span>
     );
 }
-export default ChatLink;
+export default React.memo(ChatLink);
