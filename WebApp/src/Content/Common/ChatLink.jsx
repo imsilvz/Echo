@@ -256,7 +256,6 @@ const ChatLink = (props) => {
             style.backgroundColor = isHover 
                 ? highlight : "transparent"
         }
-        console.log(struct);
     }
 
     const handleClick = (event) => {
