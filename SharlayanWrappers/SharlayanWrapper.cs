@@ -7,6 +7,7 @@ using NLog;
 using Sharlayan;
 using Sharlayan.Enums;
 using Sharlayan.Models;
+using Echo.Core.Controllers;
 namespace Echo.SharlayanWrappers
 {
     public class SharlayanWrapper
@@ -62,7 +63,7 @@ namespace Echo.SharlayanWrappers
             string patchVersion = "latest";
             GameRegion gameRegion = GameRegion.Global;
             GameLanguage gameLanguage = GameLanguage.English;
-            string cacheDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/Echo/cache/";
+            string cacheDir = SettingsController.Instance.GetCachePath();
 
             Process[] processes = Process.GetProcessesByName("ffxiv_dx11");
             foreach (Process process in processes)

@@ -6,8 +6,6 @@ import ChatLink from './ChatLink';
 import ChatQuote from './ChatQuote';
 import store from "../../store";
 
-import HexToHighlight from "../../Util/highlight";
-
 const styles = theme => ({
     chatMessage: {
         margin:0,
@@ -25,7 +23,6 @@ const styles = theme => ({
 });
 
 function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key) {
-    let highlightColor = HexToHighlight(color, 0.2);
     let message = MessageContent.Message;
     let links = MessageContent.Links;
     
@@ -54,12 +51,6 @@ function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key
             link.Length
         );
 
-        let isPlayer = false;
-        if(actorDict.hasOwnProperty(content)) {
-            let entry = actorDict[content];
-            isPlayer = entry;
-        }
-
         // add link to collection
         let linkKey = key ? 
             `${key}_Link_${i}` : 
@@ -68,9 +59,8 @@ function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key
             <ChatLink
                 key={linkKey}
                 uuid={linkKey}
-                color={highlightColor}
+                color={color}
                 content={content}
-                isPlayer={isPlayer}
                 shouldHighlight={linkHighlight}
             />
         );
@@ -493,7 +483,7 @@ AddMessageType("001D", {
     Parse: function(message) {
         let linkedMsg = LinkHighlight(
             message.MessageContent, 
-            this.Color
+            this.Color, true
         );
 
         let msg = QuoteHighlight(

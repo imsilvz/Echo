@@ -240,40 +240,28 @@ const initialState = {
 };  
 
 const ChatLink = (props) => {
-    const { uuid, color, content, isPlayer, shouldHighlight } = props;
+    const { uuid, color, content, shouldHighlight } = props;
     const [state, setState] = React.useState(initialState);
     const linkRef = React.useRef(null);
     const isHover = useHover(linkRef);
-
-    const style = {
-        cursor: isHover ? "pointer" : "auto",
-        backgroundColor: isHover ? color : "transparent"
-    }
-
-    let chatColor = null;
-    if(isPlayer) {
-        let struct = PlayerJobs[isPlayer.Job];
-        if(struct && struct.Color) {
-            chatColor = struct.Color;
-            let highlight = HexToHighlight(struct.Color, 0.2);
-            style.backgroundColor = isHover 
-                ? highlight : "transparent"
-        }
-    }
-
+    
     const handleClick = (event) => {
         event.preventDefault();
-        if(isPlayer) {
-            setState({
-                mouseX: event.clientX - 2,
-                mouseY: event.clientY - 4,
-            });
-        }
+        setState({
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+        });
     };
 
     const handleClose = () => {
         setState(initialState);
     };
+
+    let bgColor = HexToHighlight(color, 0.2);
+    const style = {
+        cursor: isHover ? "pointer" : "auto",
+        backgroundColor: isHover ? bgColor : "transparent"
+    }
     
     let menuComponent = (
         <Menu
@@ -292,10 +280,10 @@ const ChatLink = (props) => {
         </Menu>
     );
 
-    if(isPlayer && shouldHighlight) {
+    if(shouldHighlight) {
         return (
             <ChatHighlight
-                color={chatColor}
+                color={color}
                 content={content}
                 style={style} 
                 ref={linkRef}

@@ -56,12 +56,15 @@ namespace Echo
         {
             var dataBroker = DataBroker.Instance;
             var eventForwarder = new EventForwarder(new WindowInteropHelper(this).Handle);
+            var settingsController = SettingsController.Instance;
             eventForwarder.OnAppReady += EventForwarder_OnAppReady;
-            string preload = LoadResource("Echo.WebApp.dist.preload.js");
 
             webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView.CoreWebView2.AddHostObjectToScript("dataBroker", dataBroker);
             webView.CoreWebView2.AddHostObjectToScript("eventForwarder", eventForwarder);
+            webView.CoreWebView2.AddHostObjectToScript("settingsController", settingsController);
+
+            string preload = LoadResource("Echo.WebApp.dist.preload.js");
             webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(preload);
         }
 
