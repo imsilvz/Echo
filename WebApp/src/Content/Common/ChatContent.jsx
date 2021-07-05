@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 const ChatContent = (props) => {
-    const { content, uuid } = props;
+    const { uuid, content } = props;
 
     let renderContent = content;
     if(!!!Array.isArray(content)) {
