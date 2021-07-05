@@ -3,13 +3,20 @@ import { useSelector } from "react-redux";
 import MessageLog from "../MessageLog/MessageLog";
 
 const Listener = (props) => {
+    const [ currentTarget, setCurrentTarget ] = React.useState(null);
     const chatLog = useSelector((state) => state.chatlog);
     const playerInfo = useSelector((state) => state.playerinfo);
 
+    console.log(playerInfo);
+    if(playerInfo.TargetType <= 1) {
+        // targetting a player
+        if(currentTarget != playerInfo.TargetName) {
+            setCurrentTarget(playerInfo.TargetName);
+        }
+    }
+
     let filtered = [];
-    let targetName = playerInfo ? 
-        (playerInfo.TargetName || playerInfo.Name) 
-        : "";
+    let targetName = currentTarget || playerInfo.Name || "";
     for(let i=0; i<chatLog.length; i++) {
         let msg = chatLog[i];
         if(msg.MessageSource.SourcePlayer == targetName) {
