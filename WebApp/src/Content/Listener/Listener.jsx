@@ -7,7 +7,6 @@ const Listener = (props) => {
     const chatLog = useSelector((state) => state.chatlog);
     const playerInfo = useSelector((state) => state.playerinfo);
 
-    console.log(playerInfo);
     if(playerInfo.TargetType <= 1) {
         // targetting a player
         if(currentTarget != playerInfo.TargetName) {
