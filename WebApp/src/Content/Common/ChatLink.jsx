@@ -240,7 +240,7 @@ const initialState = {
 };  
 
 const ChatLink = (props) => {
-    const { uuid, color, content, isPlayer } = props;
+    const { uuid, color, content, isPlayer, shouldHighlight } = props;
     const [state, setState] = React.useState(initialState);
     const linkRef = React.useRef(null);
     const isHover = useHover(linkRef);
@@ -252,7 +252,6 @@ const ChatLink = (props) => {
 
     let chatColor = null;
     if(isPlayer) {
-        console.log(isPlayer);
         let struct = PlayerJobs[isPlayer.Job];
         if(struct && struct.Color) {
             chatColor = struct.Color;
@@ -293,7 +292,7 @@ const ChatLink = (props) => {
         </Menu>
     );
 
-    if(isPlayer) {
+    if(isPlayer && shouldHighlight) {
         return (
             <ChatHighlight
                 color={chatColor}

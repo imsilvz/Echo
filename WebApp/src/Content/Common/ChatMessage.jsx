@@ -24,7 +24,7 @@ const styles = theme => ({
     },
 });
 
-function LinkHighlight(MessageContent, color="#000000", key) {
+function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key) {
     let highlightColor = HexToHighlight(color, 0.2);
     let message = MessageContent.Message;
     let links = MessageContent.Links;
@@ -71,6 +71,7 @@ function LinkHighlight(MessageContent, color="#000000", key) {
                 color={highlightColor}
                 content={content}
                 isPlayer={isPlayer}
+                shouldHighlight={linkHighlight}
             />
         );
 
@@ -211,6 +212,7 @@ const MessageTypeDict = {
         IsSystem: false,
         IsBattle: false,
         RpChat: false,
+        NameHighlight: false,
         Parse: function(message) {
             let channel = this.Name.toUpperCase();
             let name = message.MessageSource.SourcePlayer;
@@ -239,7 +241,7 @@ const MessageTypeDict = {
                 name = LinkHighlight({ 
                     Links: [{ StartIndex: 0, Length: name?.length }],
                     Message: name,
-                }, this.Color, `${message.UUID}_Source`);
+                }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
             }
 
             if(this.IsSystem) {
@@ -312,6 +314,7 @@ AddMessageType("2040", {
 AddMessageType("000A", { 
     Name: "Say",
     RpChat: true,
+    NameHighlight: true,
 });
 AddMessageType("000B", { 
     Name: "Shout",
@@ -320,6 +323,7 @@ AddMessageType("000B", {
 AddMessageType("000C", {
     Name: "Tell (Outgoing)",
     Color: "#ffb8de",
+    NameHighlight: true,
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -347,7 +351,7 @@ AddMessageType("000C", {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color, `${message.UUID}_Source`);
+            }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -373,6 +377,7 @@ AddMessageType("000C", {
 AddMessageType("000D", {
     Name: "Tell (Incoming)",
     Color: "#ffb8de",
+    NameHighlight: true,
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -400,7 +405,7 @@ AddMessageType("000D", {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color, `${message.UUID}_Source`);
+            }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -429,6 +434,7 @@ AddMessageType("001C", {
     Name: "Emote",
     Color: "#bafff0",
     RpChat: true,
+    NameHighlight: true,
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -456,7 +462,7 @@ AddMessageType("001C", {
             name = LinkHighlight({ 
                 Links: [{ StartIndex: 0, Length: name?.length }],
                 Message: name
-            }, this.Color, `${message.UUID}_Source`);
+            }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
         }
 
         if(server) {
@@ -483,6 +489,7 @@ AddMessageType("001D", {
     Name: "Animated Emote",
     Color: "#bafff0",
     RpChat: true,
+    NameHighlight: true,
     Parse: function(message) {
         let linkedMsg = LinkHighlight(
             message.MessageContent, 
