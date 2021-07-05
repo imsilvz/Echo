@@ -9,9 +9,7 @@ using Echo.SharlayanWrappers;
 
 using Sharlayan;
 using Sharlayan.Core;
-using Sharlayan.Enums;
-using Sharlayan.Models;
-using Sharlayan.Models.ReadResults;
+using Sharlayan.Core.Enums;
 namespace Echo.Core.Controllers
 {
     public class DataBroker
@@ -98,14 +96,15 @@ namespace Echo.Core.Controllers
             {
                 ActorData data;
                 ActorItem val = kvp.Value;
+                string JobAcronym = System.Enum.GetName(typeof(Actor.Job), val.Job);
                 if(_actorDataDict.TryGetValue(kvp.Key, out data))
                 {
                     // found key
-                    if(data.Name != val.Name || data.Job != val.Job)
+                    if(data.Name != val.Name || data.Job != JobAcronym)
                     {
                         // updated!
                         data.Name = val.Name;
-                        data.Job = val.Job;
+                        data.Job = JobAcronym;
                         data.SetUpdate(true);
                     }
                 }
@@ -115,7 +114,7 @@ namespace Echo.Core.Controllers
                     {
                         ID = val.ID,
                         Name = val.Name,
-                        Job = val.Job,
+                        Job = JobAcronym,
                     };
                     data.SetUpdate(true);
                     _actorDataDict.TryAdd(kvp.Key, data);

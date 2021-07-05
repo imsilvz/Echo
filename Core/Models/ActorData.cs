@@ -11,7 +11,7 @@ namespace Echo.Core.Models
     {
         public uint ID { get; set; }
         public string Name { get; set; }
-        public Actor.Job Job { get; set; }
+        public string Job { get; set; }
         private bool _update = true;
 
         public void SetUpdate(bool b)

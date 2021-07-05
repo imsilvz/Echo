@@ -71,6 +71,12 @@ function LinkHighlight(MessageContent, color="#000000", key) {
             link.Length
         );
 
+        let isPlayer = false;
+        if(actorDict.hasOwnProperty(content)) {
+            let entry = actorDict[content];
+            isPlayer = entry;
+        }
+
         // add link to collection
         let linkKey = key ? 
             `${key}_Link_${i}` : 
@@ -81,7 +87,7 @@ function LinkHighlight(MessageContent, color="#000000", key) {
                 uuid={linkKey}
                 color={highlightColor}
                 content={content}
-                isPlayer={actorDict.hasOwnProperty(content)}
+                isPlayer={isPlayer}
             />
         );
 
@@ -218,7 +224,7 @@ function QuoteHighlight(message, collection, color, rpChat) {
 const MessageTypeDict = {
     "DEFAULT": {
         Name: "Default",
-        Color: "#FFFFFF",
+        Color: "#F7F7F7",
         IsSystem: false,
         IsBattle: false,
         RpChat: false,
@@ -234,7 +240,7 @@ const MessageTypeDict = {
             let collection = QuoteHighlight(
                 message,
                 linkedMsg,
-                "#ffffff",
+                MessageTypeDict["DEFAULT"].Color,
                 this.RpChat
             );
 
@@ -313,8 +319,13 @@ AddMessageType("0044", {
 AddMessageType("0048", { 
     Name: "PartyFinder", 
     Color: "#cccccc",
-    IsSystem: true 
+    IsSystem: true,
 });
+AddMessageType("2040", {
+    Name: "Announcement",
+    Color: "#ffde73",
+    IsSystem: true,
+})
 AddMessageType("000A", { 
     Name: "Say",
     RpChat: true,
@@ -337,7 +348,7 @@ AddMessageType("000C", {
         let msg = QuoteHighlight(
             message,
             linkedMsg,
-            "#ffffff",
+            MessageTypeDict["DEFAULT"].Color,
             this.RpChat
         );
 
@@ -390,7 +401,7 @@ AddMessageType("000D", {
         let msg = QuoteHighlight(
             message,
             linkedMsg,
-            "#ffffff",
+            MessageTypeDict["DEFAULT"].Color,
             this.RpChat
         );
 
@@ -446,7 +457,7 @@ AddMessageType("001C", {
         let msg = QuoteHighlight(
             message,
             linkedMsg,
-            "#ffffff",
+            MessageTypeDict["DEFAULT"].Color,
             this.RpChat
         );
 
@@ -498,7 +509,7 @@ AddMessageType("001D", {
         let msg = QuoteHighlight(
             message,
             linkedMsg,
-            "#ffffff",
+            MessageTypeDict["DEFAULT"].Color,
             this.RpChat
         );
 
