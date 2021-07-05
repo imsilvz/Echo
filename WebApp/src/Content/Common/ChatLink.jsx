@@ -3,6 +3,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 
+import HexToHighlight from "../../Util/highlight";
+
 const PlayerJobs = {}
 function AddJobInfo(dataLst) {
     for(let i=0; i<dataLst.length; i++) {
@@ -247,12 +249,14 @@ const ChatLink = (props) => {
     }
 
     if(isPlayer) {
-        let job = `${isPlayer.Job}`.padStart(2, '0');
-        let struct = PlayerJobs[job];
+        let struct = PlayerJobs[isPlayer.Job];
         if(struct.Color) {
+            let highlight = HexToHighlight(struct.Color, 0.2);
             style.color = struct.Color;
-            style.backgroundColor = struct.backgroundColor;
+            style.backgroundColor = isHover 
+                ? highlight : "transparent"
         }
+        console.log(struct);
     }
 
     const handleClick = (event) => {
