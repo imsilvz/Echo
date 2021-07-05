@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/styles';
 import ChatContent from './ChatContent';
 import ChatLink from './ChatLink';
 import ChatQuote from './ChatQuote';
+import store from "../../store";
 
 const styles = theme => ({
     chatMessage: {
@@ -50,6 +51,9 @@ function LinkHighlight(MessageContent, color="#000000", key) {
         return [MessageContent.Message];
     }
 
+    let state = store.getState();
+    let actorDict = state.actors;
+
     // push initial substring
     let collection = [];
     collection.push(
@@ -69,13 +73,15 @@ function LinkHighlight(MessageContent, color="#000000", key) {
 
         // add link to collection
         let linkKey = key ? 
-            `${key}_${i}` : 
+            `${key}_Link_${i}` : 
             `${link.UUID}_${i}`;
         collection.push(
             <ChatLink
                 key={linkKey}
+                uuid={linkKey}
                 color={highlightColor}
                 content={content}
+                isPlayer={actorDict.hasOwnProperty(content)}
             />
         );
 

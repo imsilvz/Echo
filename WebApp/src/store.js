@@ -45,4 +45,6 @@ function storeReducer(state=initialState, action) {
             return state;
     }
 }
-export default createStore(storeReducer);
+
+const store = createStore(storeReducer);
+export default store;

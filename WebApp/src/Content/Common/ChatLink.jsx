@@ -31,7 +31,7 @@ const initialState = {
 };  
 
 const ChatLink = (props) => {
-    const { color, content, childkey } = props;
+    const { uuid, color, content, isPlayer } = props;
     const [state, setState] = React.useState(initialState);
     const linkRef = React.useRef(null);
     const isHover = useHover(linkRef);
@@ -43,10 +43,12 @@ const ChatLink = (props) => {
 
     const handleClick = (event) => {
         event.preventDefault();
-        setState({
-            mouseX: event.clientX - 2,
-            mouseY: event.clientY - 4,
-        });
+        if(isPlayer) {
+            setState({
+                mouseX: event.clientX - 2,
+                mouseY: event.clientY - 4,
+            });
+        }
     };
 
     const handleClose = () => {
@@ -64,8 +66,8 @@ const ChatLink = (props) => {
                 return child;
             }
             return React.cloneElement(child, { 
-                key: `${childkey}_${i}`,
-                childkey: `${childkey}_${i}`
+                key: `${uuid}_${i}`,
+                childkey: `${uuid}_${i}`
             });
         })}
             <Menu
