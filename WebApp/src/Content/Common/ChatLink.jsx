@@ -116,7 +116,7 @@ AddJobInfo([
         Name: "Paladin",
     },
     {
-        Acroynm: "MNK",
+        Acronym: "MNK",
         BaseJob: "PGL",
         Name: "Monk",
     },
@@ -249,8 +249,9 @@ const ChatLink = (props) => {
     }
 
     if(isPlayer) {
+        console.log(isPlayer);
         let struct = PlayerJobs[isPlayer.Job];
-        if(struct.Color) {
+        if(struct && struct.Color) {
             let highlight = HexToHighlight(struct.Color, 0.2);
             style.color = struct.Color;
             style.backgroundColor = isHover 

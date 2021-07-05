@@ -518,7 +518,6 @@ AddMessageType("001E", {
 });
 
 function FormatChatMessage(message) {
-    console.log(message);
     if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
         let messageType = MessageTypeDict[message.MessageType];
