@@ -6,6 +6,9 @@ const Listener = (props) => {
     const [ currentTarget, setCurrentTarget ] = React.useState(null);
     const chatLog = useSelector((state) => state.chatlog);
     const playerInfo = useSelector((state) => state.playerinfo);
+    const settings = useSelector(
+        (state) => state.settings.ListenerSettings
+    );
 
     if(playerInfo.TargetType <= 1) {
         // targetting a player
@@ -27,6 +30,7 @@ const Listener = (props) => {
         <MessageLog
             Messages={filtered}
             EmptyMessage={targetName ? "No Messages" : "You have no target!"}
+            Settings={settings}
         />
     )
 }
