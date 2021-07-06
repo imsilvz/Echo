@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withStyles } from '@material-ui/styles';
 
 import Button from "@material-ui/core/Button";
@@ -73,9 +72,6 @@ const styles = theme => ({
     }
 });
 
-@connect((state) => ({
-    CommonSettings: state.settings.CommonSettings
-}))
 class MessageLog extends React.Component
 {
     constructor(props) {
@@ -172,11 +168,9 @@ class MessageLog extends React.Component
 
     render() {
         const { classes } = this.props;
+        const { Settings } = this.props;
         const { Messages, EmptyMessage } = this.props;
-        const { Settings, CommonSettings } = this.props;
         const { smartScrollTop, smartScrollBot } = this.state;
-        
-        console.log(Settings, CommonSettings);
 
         // dynamically position top depending on panel size
         let panel = this.messagePanelRef.current;
@@ -192,7 +186,11 @@ class MessageLog extends React.Component
                 <div className={classes.messageContainer}>
                     {Messages.map((item, idx) => {
                         return (
-                            <ChatMessage key={item.UUID} message={item}/>
+                            <ChatMessage 
+                                key={item.UUID} 
+                                message={item}
+                                settings={Settings}
+                            />
                         );
                     })}
                     <div className={classes.messageEnd} ref={this.messageEndRef}/>

@@ -5,17 +5,15 @@ namespace Echo.Core.Models.Settings
 {
     public class EchoSettings
     {
-        public object CommonSettings { get; set; }
+        public CommonSettings CommonSettings { get; set; }
         public object ChatlogSettings { get; set; }
         public object ListenerSettings { get; set; }
-        public object ChatType { get; set; }
         public Dictionary<string, JobInfoItem> JobInfo { get; set; }
         public EchoSettings()
         {
-            CommonSettings = new object();
+            CommonSettings = new CommonSettings();
             ChatlogSettings = new object();
             ListenerSettings = new object();
-            ChatType = new object();
             JobInfo = new Dictionary<string, JobInfoItem>();
             this.SetupDefaults();
         }
