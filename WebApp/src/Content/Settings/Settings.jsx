@@ -1,10 +1,13 @@
 import React from "react";
+import Container from '@material-ui/core/Container';
+
+import CommonSettings from './CommonSettings';
 
 const Settings = (props) => {
     return (
-        <div>
-            <p>Settings</p>
-        </div>
+        <Container>
+            <CommonSettings/>
+        </Container>
     )
 }
 export default Settings;
