@@ -36,6 +36,13 @@ const theme = createMuiTheme({
             dense: {
                 minHeight: 32,
             }
+        },
+        MuiAccordion: {
+            root: {
+                '&$expanded': {
+                    margin: 0,
+                }
+            }
         }
     }
 });
