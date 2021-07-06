@@ -514,7 +514,7 @@ AddMessageType("001E", {
     Color: "#ffff00"
 });
 
-function FormatChatMessage(message) {
+function FormatChatMessage(message, settings) {
     if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
         // if we have a parse method
         let messageType = MessageTypeDict[message.MessageType];
@@ -525,8 +525,8 @@ function FormatChatMessage(message) {
 }
 
 const ChatMessage = (props) => {
-    const { classes, message } = props;
-    let formatted = FormatChatMessage(message);
+    const { classes, message, settings } = props;
+    let formatted = FormatChatMessage(message, settings);
     return (
         <p className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {

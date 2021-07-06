@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/styles';
 import Button from "@material-ui/core/Button";
 import ChatMessage from "../Common/ChatMessage";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import { common } from "@material-ui/core/colors";
 
 const styles = theme => ({
     messagePanel: {
@@ -72,6 +73,9 @@ const styles = theme => ({
     }
 });
 
+@connect((state) => ({
+    CommonSettings: state.settings.CommonSettings
+}))
 class MessageLog extends React.Component
 {
     constructor(props) {
@@ -169,7 +173,10 @@ class MessageLog extends React.Component
     render() {
         const { classes } = this.props;
         const { Messages, EmptyMessage } = this.props;
+        const { Settings, CommonSettings } = this.props;
         const { smartScrollTop, smartScrollBot } = this.state;
+        
+        console.log(Settings, CommonSettings);
 
         // dynamically position top depending on panel size
         let panel = this.messagePanelRef.current;
