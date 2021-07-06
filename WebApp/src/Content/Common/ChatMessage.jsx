@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { withStyles } from '@material-ui/styles';
 
 import ChatContent from './ChatContent';
@@ -244,7 +245,7 @@ const MessageTypeDict = {
                 if(server) {
                     return (
                         <span style={{color:this.Color}}>
-                            {`[${channel}] `}
+                            {/*`[${channel}] `*/}
                             {name}
                             {` (${server}): `}
                             {content}
@@ -253,7 +254,7 @@ const MessageTypeDict = {
                 }
                 return (
                     <span style={{color:this.Color}}>
-                        {`[${channel}] `}
+                        {/*`[${channel}] `*/}
                         {name}
                         {": "}
                         {content}   
@@ -458,7 +459,7 @@ AddMessageType("001C", {
         if(server) {
             return (
                 <span style={{color:this.Color}}>
-                    {"[EMOTE] "}
+                    {/*"[EMOTE] "*/}
                     {name}
                     {` (${server}) `}
                     {content}
@@ -467,7 +468,7 @@ AddMessageType("001C", {
         }
         return (
             <span style={{color:this.Color}}>
-                {"[EMOTE] "}
+                {/*"[EMOTE] "*/}
                 {name}
                 {" "}
                 {content}
@@ -503,7 +504,7 @@ AddMessageType("001D", {
 
         return (
             <span style={{color:this.Color}}>
-                {`[EMOTE] `}
+                {/*`[EMOTE] `*/}
                 {content}
             </span>
         );
@@ -526,6 +527,10 @@ function FormatChatMessage(message, settings) {
 
 const ChatMessage = (props) => {
     const { classes, message, settings } = props;
+    const commonSettings = useSelector((state) => 
+        state.settings.CommonSettings
+    );
+
     let formatted = FormatChatMessage(message, settings);
     return (
         <p className={classes.chatMessage}>
