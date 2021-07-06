@@ -29,6 +29,19 @@ namespace Echo.Core.Controllers
             this.SetupSettingsFiles();
         }
 
+        public void OnApplicationShutdown()
+        {
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                IgnoreNullValues = true,
+                WriteIndented = true,
+            };
+
+            var settingsJson = JsonSerializer.Serialize(_settings, jsonOptions);
+            File.WriteAllText($"{_dataPath}/settings.json", settingsJson);
+        }
+
         private void SetupDirectories()
         {
             Directory.CreateDirectory(_cachePath);

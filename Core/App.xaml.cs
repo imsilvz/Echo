@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
 
+using Echo.Core.Controllers;
 namespace Echo
 {
     /// <summary>
@@ -24,6 +25,11 @@ namespace Echo
         {
             var wnd = new MainWindow();
             wnd.Show();
+        }
+
+        private void OnExit(object sender, ExitEventArgs eventArgs)
+        {
+            SettingsController.Instance.OnApplicationShutdown();
         }
 
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
