@@ -66,9 +66,27 @@ namespace Echo.Core.Models.Settings
                 Color = "#CCCCCC",
                 IsSystem = true,
             });
+            ChatTypes.Add("0840", new ChatTypeSetting()
+            {
+                Name = "ExperienceGain",
+                Color = "#FFDE73",
+                IsSystem = true,
+            });
+            ChatTypes.Add("083E", new ChatTypeSetting()
+            {
+                Name = "BonusReward",
+                Color = "#FFFFB0",
+                IsSystem = true,
+            });
+            ChatTypes.Add("1040", new ChatTypeSetting()
+            {
+                Name = "Achievement", // Achievement
+                Color = "#FFDE73",
+                IsSystem = true,
+            });
             ChatTypes.Add("2040", new ChatTypeSetting()
             {
-                Name = "Achievement", // Achievement / Level Up
+                Name = "LevelUp", // Achievement / Level Up
                 Color = "#FFDE73",
                 IsSystem = true,
             });
