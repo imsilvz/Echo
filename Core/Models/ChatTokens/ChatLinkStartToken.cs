@@ -18,6 +18,8 @@ namespace Echo.Core.Models.ChatTokens
             int idx = 2;
             int tokenLength = idx + Data[idx] + 1;
             byte[] tokenData = new byte[tokenLength];
+            string hex = BitConverter.ToString(initialData)
+                .Replace("-", string.Empty);
             Array.Copy(Data, 0, tokenData, 0, tokenLength);
             this.Data = tokenData;
             this.Length = tokenLength;
@@ -32,13 +34,6 @@ namespace Echo.Core.Models.ChatTokens
                     break;
                 }
             }
-            string hex = BitConverter.ToString(initialData)
-                .Replace("-", string.Empty);
-            string hex2 = BitConverter.ToString(Data)
-                .Replace("-", string.Empty);
-            //Debug.WriteLine(hex);
-            //Debug.WriteLine(hex2);
-            //if (!Delimited) { throw new Exception(); }
             return true;
         }
     }

@@ -85,14 +85,13 @@ function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key
     return collection;
 }
 
-function QuoteHighlight(message, collection, color, rpChat) {
-    let emoteColor = MessageTypeDict["001C"].Color;
+function QuoteHighlight(message, collection, color, emoteColor) {
     let newCollection = [];
             
     // find if there are any quotes
     // do this for rpchat functionality!
     let hasQuote = false;
-    if(rpChat) {
+    if(emoteColor) {
         for(let item of collection) {
             if(typeof(item) == "string") {
                 if(item.includes("\"")) {
@@ -146,7 +145,7 @@ function QuoteHighlight(message, collection, color, rpChat) {
                 else
                 {
                     // add to new collection
-                    if(rpChat) {
+                    if(emoteColor) {
                         newCollection.push((
                             <ChatQuote
                                 color={emoteColor}
@@ -168,7 +167,7 @@ function QuoteHighlight(message, collection, color, rpChat) {
             else
             {
                 // add to new collection
-                if(rpChat) {
+                if(emoteColor) {
                     newCollection.push((
                         <ChatQuote
                             color={emoteColor}
@@ -213,11 +212,18 @@ const MessageTypeDict = {
                 this.Color
             );
     
+            let emoteColor = null;
+            if(this.IsRpChat) {
+                let state = store.getState();
+                let commonSettings = state.settings.CommonSettings;
+                emoteColor = commonSettings.ChatTypes["001C"].Color;
+            }
+
             let collection = QuoteHighlight(
                 message,
                 linkedMsg,
                 MessageTypeDict["DEFAULT"].Color,
-                this.IsRpChat
+                emoteColor
             );
 
             let content = (
@@ -235,7 +241,7 @@ const MessageTypeDict = {
                 }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
             }
 
-            if(this.IsSystem) {
+            if(this.IsSystem || this.IsBattle) {
                 return (
                     <span style={{color:this.Color}}>
                         {content}
@@ -283,7 +289,7 @@ OverrideMessageType("000C", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.IsRpChat
+            this.IsRpChat ? this.Color : null
         );
 
         let content = (
@@ -334,7 +340,7 @@ OverrideMessageType("000D", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.IsRpChat
+            this.IsRpChat ? this.Color : null
         );
 
         let content = (
@@ -370,6 +376,66 @@ OverrideMessageType("000D", {
         );
     }
 });
+OverrideMessageType("000E", {
+    Parse: function(message) {
+        let name = message.MessageSource.SourcePlayer;
+        let server = message.MessageSource.SourceServer;
+        let linkedMsg = LinkHighlight(
+            message.MessageContent, 
+            this.Color
+        );
+
+        console.log(message);
+
+        let emoteColor = null;
+        if(this.IsRpChat) {
+            let state = store.getState();
+            let commonSettings = state.settings.CommonSettings;
+            emoteColor = commonSettings.ChatTypes["001C"].Color;
+        }
+
+        let msg = QuoteHighlight(
+            message,
+            linkedMsg,
+            MessageTypeDict["DEFAULT"].Color,
+            emoteColor
+        );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={msg}
+            />
+        );
+
+        if(name) {
+            name = LinkHighlight({ 
+                Links: [{ StartIndex: 0, Length: name?.length }],
+                Message: name
+            }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
+        }
+
+        if(server) {
+            return (
+                <span style={{color:this.Color}}>
+                    {"("}
+                    {name}
+                    {` (${server})) `}
+                    {content}
+                </span>
+            );
+        }
+        return (
+            <span style={{color:this.Color}}>
+                {"("}
+                {name}
+                {") "}
+                {content}
+            </span>
+        );
+    }
+})
 OverrideMessageType("001C", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
@@ -383,7 +449,7 @@ OverrideMessageType("001C", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.IsRpChat
+            this.IsRpChat ? this.Color : null
         );
 
         let content = (
@@ -432,7 +498,7 @@ OverrideMessageType("001D", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.IsRpChat
+            this.IsRpChat ? this.Color : null
         );
 
         let content = (
