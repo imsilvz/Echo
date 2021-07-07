@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/styles';
 import Button from "@material-ui/core/Button";
 import ChatMessage from "../Common/ChatMessage";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import { common } from "@material-ui/core/colors";
 
 const styles = theme => ({
     messagePanel: {

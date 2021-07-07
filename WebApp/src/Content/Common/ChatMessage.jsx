@@ -202,7 +202,7 @@ const MessageTypeDict = {
         Color: "#F7F7F7",
         IsSystem: false,
         IsBattle: false,
-        RpChat: false,
+        IsRpChat: false,
         NameHighlight: false,
         Parse: function(message) {
             let channel = this.Name.toUpperCase();
@@ -217,7 +217,7 @@ const MessageTypeDict = {
                 message,
                 linkedMsg,
                 MessageTypeDict["DEFAULT"].Color,
-                this.RpChat
+                this.IsRpChat
             );
 
             let content = (
@@ -265,56 +265,12 @@ const MessageTypeDict = {
     }
 }
 
-function AddMessageType(code, opts) {
-    let messageType = Object.assign(
+function OverrideMessageType(code, opts) {
+    MessageTypeDict[code] = Object.assign(
         {}, MessageTypeDict["DEFAULT"], opts
     );
-
-    for(let name in messageType) {
-        let prop = messageType[name];
-        if(typeof(prop) == "function") {
-            let bound = messageType[name].bind(messageType);
-            messageType[name] = bound;
-        }
-    }
-    MessageTypeDict[code] = messageType;
 }
-AddMessageType("0003", { 
-    Name: "Welcome", 
-    IsSystem: true 
-});
-AddMessageType("0039", { 
-    Name: "System", 
-    Color: "#cccccc",
-    IsSystem: true 
-});
-AddMessageType("0044", { 
-    Name: "Error", 
-    IsSystem: true 
-});
-AddMessageType("0048", { 
-    Name: "PartyFinder", 
-    Color: "#cccccc",
-    IsSystem: true,
-});
-AddMessageType("2040", {
-    Name: "Announcement",
-    Color: "#ffde73",
-    IsSystem: true,
-})
-AddMessageType("000A", { 
-    Name: "Say",
-    RpChat: true,
-    NameHighlight: true,
-});
-AddMessageType("000B", { 
-    Name: "Shout",
-    Color: "#ffa666"
-});
-AddMessageType("000C", {
-    Name: "Tell (Outgoing)",
-    Color: "#ffb8de",
-    NameHighlight: true,
+OverrideMessageType("000C", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -327,7 +283,7 @@ AddMessageType("000C", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.RpChat
+            this.IsRpChat
         );
 
         let content = (
@@ -351,7 +307,7 @@ AddMessageType("000C", {
                     {">> "}
                     {name}
                     {` (${server}): `}
-                    {msg}
+                    {content}
                 </span>
             );
         }
@@ -360,15 +316,12 @@ AddMessageType("000C", {
                 {">> "}
                 {name}
                 {": "}
-                {msg}
+                {content}
             </span>
         );
     }
 });
-AddMessageType("000D", {
-    Name: "Tell (Incoming)",
-    Color: "#ffb8de",
-    NameHighlight: true,
+OverrideMessageType("000D", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -381,7 +334,7 @@ AddMessageType("000D", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.RpChat
+            this.IsRpChat
         );
 
         let content = (
@@ -417,15 +370,7 @@ AddMessageType("000D", {
         );
     }
 });
-AddMessageType("001B", {
-    Name: "Novice", // Novice Network
-    Color: "#d4ff7d"
-});
-AddMessageType("001C", {
-    Name: "Emote",
-    Color: "#bafff0",
-    RpChat: true,
-    NameHighlight: true,
+OverrideMessageType("001C", {
     Parse: function(message) {
         let name = message.MessageSource.SourcePlayer;
         let server = message.MessageSource.SourceServer;
@@ -438,7 +383,7 @@ AddMessageType("001C", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.RpChat
+            this.IsRpChat
         );
 
         let content = (
@@ -476,11 +421,7 @@ AddMessageType("001C", {
         );
     }
 });
-AddMessageType("001D", {
-    Name: "Animated Emote",
-    Color: "#bafff0",
-    RpChat: true,
-    NameHighlight: true,
+OverrideMessageType("001D", {
     Parse: function(message) {
         let linkedMsg = LinkHighlight(
             message.MessageContent, 
@@ -491,7 +432,7 @@ AddMessageType("001D", {
             message,
             linkedMsg,
             MessageTypeDict["DEFAULT"].Color,
-            this.RpChat
+            this.IsRpChat
         );
 
         let content = (
@@ -510,15 +451,52 @@ AddMessageType("001D", {
         );
     }
 });
-AddMessageType("001E", {
-    Name: "Yell",
-    Color: "#ffff00"
-});
+
+function BuildMessageType(type, typeSettings) {
+    let messageType = {}
+
+    // assign all default methods
+    messageType = Object.assign(
+        messageType, 
+        MessageTypeDict["DEFAULT"]
+    );
+
+    if(MessageTypeDict.hasOwnProperty(type)) {
+        // override parse method if applicable
+        messageType = Object.assign(
+            messageType, 
+            MessageTypeDict[type]
+        );
+    }
+
+    // apply settings to type
+    messageType = Object.assign(
+        messageType, 
+        typeSettings
+    );
+
+    // bind this keyword
+    for(let name in messageType) {
+        let prop = messageType[name];
+        if(typeof(prop) == "function") {
+            let bound = messageType[name].bind(messageType);
+            messageType[name] = bound;
+        }
+    }
+    return messageType;
+}
 
 function FormatChatMessage(message, settings) {
-    if(MessageTypeDict.hasOwnProperty(message.MessageType)) {
+    let messageTypes = settings.ChatTypes;
+
+    if(messageTypes.hasOwnProperty(message.MessageType)) {
+        let typeSettings = messageTypes[message.MessageType];
+        let messageType = BuildMessageType(
+            message.MessageType,
+            typeSettings
+        );
+
         // if we have a parse method
-        let messageType = MessageTypeDict[message.MessageType];
         return messageType.Parse(message);
     }
     // default handling
@@ -531,7 +509,7 @@ const ChatMessage = (props) => {
         state.settings.CommonSettings
     );
 
-    let formatted = FormatChatMessage(message, settings);
+    let formatted = FormatChatMessage(message, commonSettings);
     return (
         <p className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {
