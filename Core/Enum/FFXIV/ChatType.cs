@@ -39,7 +39,10 @@ namespace Echo.Core.Enum.FFXIV
         SystemError         = 0x0044,
         PartyFinderMessage  = 0x0048,
         JobChange           = 0x0839,
-        PlayerAchievement   = 0x2040, // level up or achievement
+        ExperienceGain      = 0x0840,
+        BonusReward         = 0x083E,
+        PlayerAchievement   = 0x1040, // level up or achievement
+        PlayerLevelUp       = 0x2040, // level up or achievement
         Synthesize          = 0x2042,
     }
 
