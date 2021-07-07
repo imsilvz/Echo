@@ -13,10 +13,25 @@ let initialState = {
 }
 
 function storeReducer(state=initialState, action) {
+    let newState;
     switch(action.type) {
+        case 'SET_ENABLE_JOB_COLORS':
+            let enabled = action.data;
+            let CommonSettings = state.settings.CommonSettings;
+            let newSettings = Object.assign({}, 
+                CommonSettings, {
+                JobColorsEnabled: enabled
+            });
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    CommonSettings: newSettings,
+                }
+            };
         case 'LOAD_SETTINGS':
             console.log(action);
-            let newState = {
+            newState = {
                 ...state,
                 settings: {
                     ...action.data,

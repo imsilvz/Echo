@@ -39,9 +39,6 @@ const CommonSettings = (props) => {
             </Box>
             <JobColorSettings/>
             <Divider/>
-            <JobColorSettings/>
-            <Divider/>
-            <JobColorSettings/>
         </Card>
     )
 }

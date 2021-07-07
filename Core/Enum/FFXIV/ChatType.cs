@@ -37,19 +37,7 @@ namespace Echo.Core.Enum.FFXIV
         SystemMessage       = 0x0039,
         SystemError         = 0x0044,
         PartyFinderMessage  = 0x0048,
-        PlayerLevelUp       = 0x2040, // level up or achievement
-    }
-
-    public enum BattleChatType : ushort
-    {
-        LocalUseAction = 0x082B,
-        LocalGainStatus = 0x08AE,
-        LocalLoseStatus = 0x08B0,
-
-        LocalDamageDealt = 0x0B29,
-        LocalCriticalDealt = 0x0AA9,
-
-        DefeatEnemy = 0x0B3A,
+        PlayerAchievement   = 0x2040, // level up or achievement
     }
 
     public enum StandardChatType : ushort
@@ -67,14 +55,5 @@ namespace Echo.Core.Enum.FFXIV
     public enum SpecialChatType : ushort
     {
         NoviceNetwork = 0x001B,
-    }
-
-    public enum SystemChatType : ushort
-    {
-        WelcomeMessage = 0x0003,
-        SystemMessage = 0x0039,
-        SystemError = 0x0044,
-        PartyFinderMessage = 0x0048,
-        PlayerLevelUp = 0x2040,
     }
 }

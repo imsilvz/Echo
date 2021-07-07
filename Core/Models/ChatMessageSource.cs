@@ -86,16 +86,6 @@ namespace Echo.Core.Models
                     // messages in Novice Network have an extra icon preceding the chat link
                     Debug.WriteLine(this.ListTokens());
                     break;
-
-                // BATTLE CHATLOG
-                case ushort typ when System.Enum.IsDefined(typeof(BattleChatType), typ):
-                    this.IsBattle = true;
-                    break;
-
-                // SYSTEM MESSAGES
-                case ushort typ when System.Enum.IsDefined(typeof(SystemChatType), typ):
-                    this.IsSystem = true;
-                    break;
                 default:
                     break;
             }

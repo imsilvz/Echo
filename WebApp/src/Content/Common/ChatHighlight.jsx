@@ -21,15 +21,18 @@ const ChatHighlight = (props, ref) => {
     const { uuid, color, content } = props;
     const actors = useSelector((state) => state.actors);
     const settings = useSelector((state) => state.settings);
+    const commonSettings = settings.CommonSettings;
     let chatColor = color;
     let style = {...props.style};
 
     if(typeof(content) == "string") {
-        if(actors.hasOwnProperty(content)) {
-            let entry = actors[content];
-            let jobColor = GetJobColor(settings, entry.Job);
-            if(jobColor) {
-                chatColor = jobColor;
+        if(commonSettings.JobColorsEnabled) {
+            if(actors.hasOwnProperty(content)) {
+                let entry = actors[content];
+                let jobColor = GetJobColor(commonSettings, entry.Job);
+                if(jobColor) {
+                    chatColor = jobColor;
+                }
             }
         }
     }
