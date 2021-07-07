@@ -42,6 +42,14 @@ namespace Echo.Core.Controllers
             File.WriteAllText($"{_dataPath}/settings.json", settingsJson);
         }
 
+        public void OnSettingsUpdate(string json)
+        {
+            var updatedSettings = JsonSerializer.Deserialize<EchoSettings>(
+                json
+            );
+            _settings = updatedSettings;
+        }
+
         private void SetupDirectories()
         {
             Directory.CreateDirectory(_cachePath);
