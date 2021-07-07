@@ -60,11 +60,40 @@ namespace Echo.Core.Models.Settings
                 Color = "#CCCCCC",
                 IsSystem = true,
             });
+            ChatTypes.Add("0839", new ChatTypeSetting()
+            {
+                Name = "JobChange",
+                Color = "#CCCCCC",
+                IsSystem = true,
+            });
             ChatTypes.Add("2040", new ChatTypeSetting()
             {
                 Name = "Achievement", // Achievement / Level Up
                 Color = "#FFDE73",
                 IsSystem = true,
+            });
+            ChatTypes.Add("2042", new ChatTypeSetting()
+            {
+                Name = "Synthesize", // Crafting!
+                Color = "#DEBFF7",
+                IsSystem = true,
+            });
+
+            // Battle
+            ChatTypes.Add("082B", new ChatTypeSetting()
+            {
+                Name = "LocalUseAction",
+                IsBattle = true
+            });
+            ChatTypes.Add("08AE", new ChatTypeSetting()
+            {
+                Name = "LocalGainStatus",
+                IsBattle = true
+            });
+            ChatTypes.Add("08B0", new ChatTypeSetting()
+            {
+                Name = "LocalLoseStatus",
+                IsBattle = true
             });
 
             // Standard Chat Messages
@@ -89,6 +118,13 @@ namespace Echo.Core.Models.Settings
             {
                 Name = "Tell (Incoming)",
                 Color = "#FFB8DE",
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000E", new ChatTypeSetting()
+            {
+                Name = "Party",
+                Color = "#66E5FF",
+                IsRpChat = true,
                 NameHighlight = true,
             });
             ChatTypes.Add("001C", new ChatTypeSetting()

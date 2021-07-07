@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 
@@ -59,28 +60,37 @@ namespace Echo.Core.Models
                     headerBytes = byteList.ToArray();
                     byteList.Clear();
 
-                    // Segment 2 is the source, terminated by 1F
+                    // Read Segment 3 first to avoid 1F in Source
+                    // Segment 3 (Body/Payload) is everything that remains in the message after terminator
+                    long sourceStart = s.Position;
+                    long sourceEnd;
+                    s.Seek(-1, SeekOrigin.End);
+
                     do
                     {
                         byte b = reader.ReadByte();
+                        s.Seek(-2, SeekOrigin.Current);
                         if (b == 0x1F)
                             break;
                         byteList.Add(b);
                     }
-                    while (s.Position < s.Length);
+                    while (s.Position > sourceStart);
 
-                    sourceBytes = byteList.ToArray();
+                    byteList.Reverse();
+                    payloadBytes = byteList.ToArray();
                     byteList.Clear();
 
-                    // Segment 3 (Body/Payload) is everything that remains in the message
-                    do
+                    sourceEnd = s.Position;
+                    s.Seek(sourceStart, SeekOrigin.Begin);
+
+                    // Segment 2 is the source, terminated by 1F
+                    while(s.Position <= sourceEnd)
                     {
                         byte b = reader.ReadByte();
                         byteList.Add(b);
                     }
-                    while (s.Position < s.Length);
 
-                    payloadBytes = byteList.ToArray();
+                    sourceBytes = byteList.ToArray();
                     byteList.Clear();
                 }
             }

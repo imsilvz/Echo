@@ -24,6 +24,7 @@ namespace Echo.Core.Enum.FFXIV
         Shout               = 0x00B,
         SendTell            = 0x000C,
         RecvTell            = 0x000D,
+        Party               = 0x000E,
 
         Emote               = 0x001C,
         AnimEmote           = 0x001D,
@@ -37,7 +38,9 @@ namespace Echo.Core.Enum.FFXIV
         SystemMessage       = 0x0039,
         SystemError         = 0x0044,
         PartyFinderMessage  = 0x0048,
+        JobChange           = 0x0839,
         PlayerAchievement   = 0x2040, // level up or achievement
+        Synthesize          = 0x2042,
     }
 
     public enum StandardChatType : ushort
@@ -46,6 +49,7 @@ namespace Echo.Core.Enum.FFXIV
         Shout = 0x00B,
         SendTell = 0x000C,
         RecvTell = 0x000D,
+        Party = 0x000E,
 
         Emote = 0x001C,
         AnimEmote = 0x001D,
