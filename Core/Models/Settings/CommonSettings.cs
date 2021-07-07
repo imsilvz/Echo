@@ -10,11 +10,11 @@ namespace Echo.Core.Models.Settings
     {
         public string ChatType { get; set; }
         public string Name { get; set; }
-        public bool IsBattle { get; set; }
-        public bool IsSystem { get; set; }
-        public bool IsRpChat { get; set; }
-        public bool NameHighlight { get; set; }
-        public string Color { get; set; }
+        public bool IsBattle { get; set; } = false;
+        public bool IsSystem { get; set; } = false;
+        public bool IsRpChat { get; set; } = false;
+        public bool NameHighlight { get; set; } = false;
+        public string Color { get; set; } = "#F7F7F7";
     }
 
     public class CommonSettings
@@ -24,12 +24,102 @@ namespace Echo.Core.Models.Settings
         public Dictionary<string, JobInfoItem> JobInfo { get; set; }
         public CommonSettings() 
         {
-            ChatTypes = new Dictionary<string, ChatTypeSetting>();
-            JobInfo = new Dictionary<string, JobInfoItem>();
             this.SetupDefaults();
         }
 
         private void SetupDefaults()
+        {
+            this.SetupDefaultChatTypes();
+            this.SetupDefaultJobInfo();
+        }
+
+        private void SetupDefaultChatTypes()
+        {
+            ChatTypes = new Dictionary<string, ChatTypeSetting>();
+
+            // System
+            ChatTypes.Add("0003", new ChatTypeSetting()
+            {
+                Name = "Welcome",
+                IsSystem = true
+            });
+            ChatTypes.Add("0039", new ChatTypeSetting()
+            {
+                Name = "System",
+                Color = "#CCCCCC",
+                IsSystem = true
+            });
+            ChatTypes.Add("0044", new ChatTypeSetting()
+            {
+                Name = "Error",
+                IsSystem = true
+            });
+            ChatTypes.Add("0048", new ChatTypeSetting()
+            {
+                Name = "PartyFinder",
+                Color = "#CCCCCC",
+                IsSystem = true,
+            });
+            ChatTypes.Add("2040", new ChatTypeSetting()
+            {
+                Name = "Achievement", // Achievement / Level Up
+                Color = "#FFDE73",
+                IsSystem = true,
+            });
+
+            // Standard Chat Messages
+            ChatTypes.Add("000A", new ChatTypeSetting()
+            {
+                Name = "Say",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000B", new ChatTypeSetting()
+            {
+                Name = "Shout",
+                Color = "#FFA666"
+            });
+            ChatTypes.Add("000C", new ChatTypeSetting()
+            {
+                Name = "Tell (Outgoing)",
+                Color = "#FFB8DE",
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000D", new ChatTypeSetting()
+            {
+                Name = "Tell (Incoming)",
+                Color = "#FFB8DE",
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001C", new ChatTypeSetting()
+            {
+                Name = "Emote",
+                Color = "#BAFFF0",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001D", new ChatTypeSetting()
+            {
+                Name = "Emote",
+                Color = "#BAFFF0",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001E", new ChatTypeSetting()
+            {
+                Name = "Yell",
+                Color = "#FFFF00"
+            });
+
+            // Special Chat Channel
+            ChatTypes.Add("001B", new ChatTypeSetting()
+            {
+                Name = "Novice", // Novice Network
+                Color = "#D4FF7D"
+            });
+        }
+
+        private void SetupDefaultJobInfo()
         {
             JobColorsEnabled = true;
             var JobInfoList = new List<JobInfoItem>();
@@ -78,6 +168,7 @@ namespace Echo.Core.Models.Settings
             JobInfoList.Add(new JobInfoItem("GNB", null, "Gunbreaker", "#f0b885"));
             JobInfoList.Add(new JobInfoItem("DNC", null, "Dancer", "#f8d3c9"));
 
+            JobInfo = new Dictionary<string, JobInfoItem>();
             foreach (var item in JobInfoList)
             {
                 JobInfo.Add(item.Acronym, item);
