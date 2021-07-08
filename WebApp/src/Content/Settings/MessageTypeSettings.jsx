@@ -235,7 +235,7 @@ const MessageTypeSettings = (props) => {
                                 <TableCell>Message Type</TableCell>
                                 <TableCell>Battle</TableCell>
                                 <TableCell>System</TableCell>
-                                <TableCell padding="default">RP Chat</TableCell>
+                                <TableCell padding="default">RP</TableCell>
                                 <TableCell padding="default">Colored Name</TableCell>
                                 <TableCell>Color</TableCell>
                             </TableRow>
