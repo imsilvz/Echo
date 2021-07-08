@@ -154,6 +154,11 @@ namespace Echo.Core.Models.Settings
                 Color = "#FFDE73",
                 IsSystem = true,
             });
+            ChatTypes.Add("0841", new ChatTypeSetting()
+            {
+                Name = "LocalLootRoll",
+                IsSystem = true,
+            });
             ChatTypes.Add("083E", new ChatTypeSetting()
             {
                 Name = "BonusReward",
@@ -164,6 +169,11 @@ namespace Echo.Core.Models.Settings
             {
                 Name = "Achievement", // Achievement
                 Color = "#FFDE73",
+                IsSystem = true,
+            });
+            ChatTypes.Add("1041", new ChatTypeSetting()
+            {
+                Name = "PlayerLootRoll", // Achievement
                 IsSystem = true,
             });
             ChatTypes.Add("2040", new ChatTypeSetting()
@@ -193,6 +203,22 @@ namespace Echo.Core.Models.Settings
             ChatTypes.Add("08B0", new ChatTypeSetting()
             {
                 Name = "LocalLoseStatus",
+                IsBattle = true
+            });
+
+            ChatTypes.Add("0B29", new ChatTypeSetting()
+            {
+                Name = "LocalDamageDealt",
+                IsBattle = true
+            });
+            ChatTypes.Add("0AA9", new ChatTypeSetting()
+            {
+                Name = "LocalCriticalDealt",
+                IsBattle = true
+            });
+            ChatTypes.Add("0AAB", new ChatTypeSetting()
+            {
+                Name = "LocalBeginCast",
                 IsBattle = true
             });
         }

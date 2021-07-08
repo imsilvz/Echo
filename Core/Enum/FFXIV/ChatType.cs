@@ -16,6 +16,7 @@ namespace Echo.Core.Enum.FFXIV
 
         LocalDamageDealt    = 0x0B29,
         LocalCriticalDealt  = 0x0AA9,
+        LocalBeginCast      = 0x0AAB,
 
         DefeatEnemy         = 0x0B3A,
 
@@ -40,8 +41,10 @@ namespace Echo.Core.Enum.FFXIV
         PartyFinderMessage  = 0x0048,
         JobChange           = 0x0839,
         ExperienceGain      = 0x0840,
+        LocalLootRoll       = 0x0841,
         BonusReward         = 0x083E,
         PlayerAchievement   = 0x1040, // level up or achievement
+        PlayerLootRoll      = 0x1041,
         PlayerLevelUp       = 0x2040, // level up or achievement
         Synthesize          = 0x2042,
     }
