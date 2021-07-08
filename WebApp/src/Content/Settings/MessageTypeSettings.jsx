@@ -16,8 +16,9 @@ import TableCell from '@material-ui/core/TableCell';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import Zoom from '@material-ui/core/Zoom';
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -56,51 +57,136 @@ const ColoredRect = (props) => {
 
 const MessageTypeRow = (props) => {
     const { code, data } = props;
+    const dispatch = useDispatch();
+    let messageType = data[code];
     return (
         <TableRow>
             <TableCell component="th" scope="row">
                 <Typography style={{
-                    color: data.Color,
+                    color: messageType.Color,
                     fontWeight:"400",
                     textShadow: `
-                    -1px -1px 0 black,  
-                    1px -1px 0 black,
-                    -1px 1px 0 black,
-                    1px 1px 0 black`,
+                    -1px -1px 0 rgba(0, 0, 0, 0.7),  
+                    1px -1px 0 rgba(0, 0, 0, 0.7),
+                    -1px 1px 0 rgba(0, 0, 0, 0.7),
+                    1px 1px 0 rgba(0, 0, 0, 0.7)`,
                     whiteSpace: "nowrap"
                 }}>
-                    {data.Name}
+                    {messageType.Name}
                 </Typography>
             </TableCell>
             <TableCell padding="checkbox">
-                <Checkbox checked={data.IsBattle}/>
+                <Tooltip title="Battle Message" TransitionComponent={Zoom}>
+                    <Checkbox 
+                        color="primary"
+                        checked={messageType.IsBattle}
+                        onClick={() => {
+                            dispatch({
+                                type: "UPDATE_COMMON_SETTINGS",
+                                data: {
+                                    ChatTypes: {
+                                        ...data,
+                                        [code]: {
+                                            ...messageType,
+                                            IsBattle: !messageType.IsBattle
+                                        }
+                                    }
+                                }
+                            });
+                        }}
+                    />
+                </Tooltip>
             </TableCell>
             <TableCell padding="checkbox">
-                <Checkbox checked={data.IsSystem}/>
+                <Tooltip title="System Message" TransitionComponent={Zoom}>
+                    <Checkbox 
+                        color="primary"
+                        checked={messageType.IsSystem}
+                        onClick={() => {
+                            dispatch({
+                                type: "UPDATE_COMMON_SETTINGS",
+                                data: {
+                                    ChatTypes: {
+                                        ...data,
+                                        [code]: {
+                                            ...messageType,
+                                            IsSystem: !messageType.IsSystem
+                                        }
+                                    }
+                                }
+                            });
+                        }}
+                    />
+                </Tooltip>
             </TableCell>
             <TableCell padding="checkbox">
-                {(data.IsBattle || data.IsSystem) ? (
+                <Tooltip 
+                    title="Enables quote highlights" 
+                    TransitionComponent={Zoom}
+                >
+                {(messageType.IsBattle || messageType.IsSystem) ? (
                     <Checkbox checked={false} disabled/>
                 ) : (
-                    <Checkbox checked={data.IsRpChat}/>
+                    <Checkbox 
+                        color="primary"
+                        checked={messageType.IsRpChat}
+                        onClick={() => {
+                            dispatch({
+                                type: "UPDATE_COMMON_SETTINGS",
+                                data: {
+                                    ChatTypes: {
+                                        ...data,
+                                        [code]: {
+                                            ...messageType,
+                                            IsRpChat: !messageType.IsRpChat
+                                        }
+                                    }
+                                }
+                            });
+                        }}
+                    />
                 )}
+                </Tooltip>
             </TableCell>
             <TableCell padding="checkbox">
-                {(data.IsBattle || data.IsSystem) ? (
+                <Tooltip 
+                    color="primary"
+                    title="Enable colored names for this message type" 
+                    TransitionComponent={Zoom}
+                >
+                {(messageType.IsBattle || messageType.IsSystem) ? (
                     <Checkbox checked={false} disabled/>
                 ) : (
-                    <Checkbox checked={data.NameHighlight}/>
+                    <Checkbox 
+                        color="primary"
+                        checked={messageType.NameHighlight}
+                        onClick={() => {
+                            dispatch({
+                                type: "UPDATE_COMMON_SETTINGS",
+                                data: {
+                                    ChatTypes: {
+                                        ...data,
+                                        [code]: {
+                                            ...messageType,
+                                            NameHighlight: !messageType.NameHighlight
+                                        }
+                                    }
+                                }
+                            });
+                        }}
+                    />
                 )}
+                </Tooltip>
             </TableCell>
             <TableCell>
                 <TextField
                     size="small"
                     margin="none"
-                    value={data.Color}
+                    value={messageType.Color}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
-                                <ColoredRect color={data.Color}/>
+                                <ColoredRect color={messageType.Color}/>
                             </InputAdornment>
                         ),
                         inputProps: {
@@ -150,18 +236,17 @@ const MessageTypeSettings = (props) => {
                                 <TableCell>Battle</TableCell>
                                 <TableCell>System</TableCell>
                                 <TableCell padding="default">RP Chat</TableCell>
-                                <TableCell padding="default">Name Highlight</TableCell>
+                                <TableCell padding="default">Colored Name</TableCell>
                                 <TableCell>Color</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {Object.keys(messageTypes).map((code, i) => {
-                                let row = messageTypes[code];
+                            {Object.keys(messageTypes).map((code) => {
                                 return (
                                     <MessageTypeRow
                                         key={`settings_msgtype_${code}`}
                                         code={code}
-                                        data={row}
+                                        data={messageTypes}
                                     />
                                 )
                             })}
