@@ -62,8 +62,10 @@ const JobColorSettings = (props) => {
                                         name="jobColorsEnabled"
                                         onClick={() => {
                                             dispatch({
-                                                type: "SET_ENABLE_JOB_COLORS",
-                                                data: !jobColorsEnabled
+                                                type: "UPDATE_COMMON_SETTINGS",
+                                                data: {
+                                                    JobColorsEnabled: !jobColorsEnabled
+                                                }
                                             });
                                         }}
                                     />

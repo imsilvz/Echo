@@ -17,14 +17,13 @@ function storeReducer(state=initialState, action) {
     let hostObjects = chrome.webview.hostObjects;
     let controller = hostObjects.sync.settingsController;
     switch(action.type) {
-        case 'SET_ENABLE_JOB_COLORS':
-            let enabled = action.data;
+        case 'UPDATE_COMMON_SETTINGS':
             let CommonSettings = state.settings.CommonSettings;
             let newSettings = Object.assign({}, 
                 CommonSettings, {
-                JobColorsEnabled: enabled
+                ...action.data
             });
-            
+
             newState = {
                 ...state,
                 settings: {

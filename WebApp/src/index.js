@@ -8,6 +8,7 @@ import {
     ThemeProvider,
     withStyles
 } from '@material-ui/core/styles';
+import { purple } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import store from './store';
@@ -22,6 +23,9 @@ const theme = createMuiTheme({
     },
     palette: {
         type: 'dark',
+        primary: {
+            main: purple[200]
+        }
     },
     overrides: {
         MuiCssBaseline: {
