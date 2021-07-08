@@ -59,9 +59,18 @@ const MessageTypeRow = (props) => {
     return (
         <TableRow>
             <TableCell component="th" scope="row">
-                <span style={{color: data.Color}}>
+                <Typography style={{
+                    color: data.Color,
+                    fontWeight:"400",
+                    textShadow: `
+                    -1px -1px 0 black,  
+                    1px -1px 0 black,
+                    -1px 1px 0 black,
+                    1px 1px 0 black`,
+                    whiteSpace: "nowrap"
+                }}>
                     {data.Name}
-                </span>
+                </Typography>
             </TableCell>
             <TableCell padding="checkbox">
                 <Checkbox checked={data.IsBattle}/>
@@ -100,8 +109,14 @@ const MessageTypeRow = (props) => {
                             }
                         },
                         style: {
+                            color: "inherit",
                             cursor: "pointer",
                         }
+                    }}
+                    disabled
+                    onClick={(e) => {
+                        console.log("Hello World")
+                        e.preventDefault();
                     }}
                 />
             </TableCell>
