@@ -17,11 +17,34 @@ namespace Echo.Core.Models.Settings
         public string Color { get; set; } = "#F7F7F7";
     }
 
+    public class JobInfoSetting
+    {
+        public string Acronym { get; set; }
+        public string BaseJob { get; set; }
+        public string Name { get; set; }
+        public string Color { get; set; }
+
+        public JobInfoSetting() { }
+        public JobInfoSetting(string acro, string name)
+        {
+            Acronym = acro;
+            Name = name;
+        }
+        public JobInfoSetting(string acro, string baseJob, string name) : this(acro, name)
+        {
+            BaseJob = baseJob;
+        }
+        public JobInfoSetting(string acro, string baseJob, string name, string color) : this(acro, baseJob, name)
+        {
+            Color = color;
+        }
+    }
+
     public class CommonSettings
     {
         public Dictionary<string, ChatTypeSetting> ChatTypes { get; set; }
         public bool JobColorsEnabled { get; set; }
-        public Dictionary<string, JobInfoItem> JobInfo { get; set; }
+        public Dictionary<string, JobInfoSetting> JobInfo { get; set; }
         public CommonSettings() 
         {
             this.SetupDefaults();
@@ -177,53 +200,53 @@ namespace Echo.Core.Models.Settings
         private void SetupDefaultJobInfo()
         {
             JobColorsEnabled = true;
-            var JobInfoList = new List<JobInfoItem>();
+            var JobInfoList = new List<JobInfoSetting>();
             // base classes
-            JobInfoList.Add(new JobInfoItem("Unknown", "Unknown"));
-            JobInfoList.Add(new JobInfoItem("GLD", null, "Gladiator", "#7FDBFF"));
-            JobInfoList.Add(new JobInfoItem("PGL", null, "Pugilist", "#d5c400"));
-            JobInfoList.Add(new JobInfoItem("MRD", null, "Marauder", "#FF4136"));
-            JobInfoList.Add(new JobInfoItem("LNC", null, "Lancer", "#33A0FF"));
-            JobInfoList.Add(new JobInfoItem("ARC", null, "Archer", "#01FF70"));
-            JobInfoList.Add(new JobInfoItem("CNJ", null, "Conjurer", "#FFFFE8"));
-            JobInfoList.Add(new JobInfoItem("THM", null, "Thaumaturge", "#E365F6"));
-            JobInfoList.Add(new JobInfoItem("ACN", "Arcanist"));
+            JobInfoList.Add(new JobInfoSetting("Unknown", "Unknown"));
+            JobInfoList.Add(new JobInfoSetting("GLD", null, "Gladiator", "#7FDBFF"));
+            JobInfoList.Add(new JobInfoSetting("PGL", null, "Pugilist", "#d5c400"));
+            JobInfoList.Add(new JobInfoSetting("MRD", null, "Marauder", "#FF4136"));
+            JobInfoList.Add(new JobInfoSetting("LNC", null, "Lancer", "#33A0FF"));
+            JobInfoList.Add(new JobInfoSetting("ARC", null, "Archer", "#01FF70"));
+            JobInfoList.Add(new JobInfoSetting("CNJ", null, "Conjurer", "#FFFFE8"));
+            JobInfoList.Add(new JobInfoSetting("THM", null, "Thaumaturge", "#E365F6"));
+            JobInfoList.Add(new JobInfoSetting("ACN", "Arcanist"));
 
             // DoH / DoL
-            JobInfoList.Add(new JobInfoItem("CPT", "Carpenter"));
-            JobInfoList.Add(new JobInfoItem("BSM", "Blacksmith"));
-            JobInfoList.Add(new JobInfoItem("ARM", "Armorer"));
-            JobInfoList.Add(new JobInfoItem("GSM", "Goldsmith"));
-            JobInfoList.Add(new JobInfoItem("LTW", "Leatherworker"));
-            JobInfoList.Add(new JobInfoItem("WVR", "Weaver"));
-            JobInfoList.Add(new JobInfoItem("ALC", "Alchemist"));
-            JobInfoList.Add(new JobInfoItem("CUL", "Culinarian"));
-            JobInfoList.Add(new JobInfoItem("MIN", "Miner"));
-            JobInfoList.Add(new JobInfoItem("BTN", "Botanist"));
-            JobInfoList.Add(new JobInfoItem("FSH", "Fisher"));
+            JobInfoList.Add(new JobInfoSetting("CPT", "Carpenter"));
+            JobInfoList.Add(new JobInfoSetting("BSM", "Blacksmith"));
+            JobInfoList.Add(new JobInfoSetting("ARM", "Armorer"));
+            JobInfoList.Add(new JobInfoSetting("GSM", "Goldsmith"));
+            JobInfoList.Add(new JobInfoSetting("LTW", "Leatherworker"));
+            JobInfoList.Add(new JobInfoSetting("WVR", "Weaver"));
+            JobInfoList.Add(new JobInfoSetting("ALC", "Alchemist"));
+            JobInfoList.Add(new JobInfoSetting("CUL", "Culinarian"));
+            JobInfoList.Add(new JobInfoSetting("MIN", "Miner"));
+            JobInfoList.Add(new JobInfoSetting("BTN", "Botanist"));
+            JobInfoList.Add(new JobInfoSetting("FSH", "Fisher"));
 
             // DoW/DoM
-            JobInfoList.Add(new JobInfoItem("PLD", "GLD", "Paladin"));
-            JobInfoList.Add(new JobInfoItem("MNK", "PGL", "Monk"));
-            JobInfoList.Add(new JobInfoItem("WAR", "MRD", "Warrior"));
-            JobInfoList.Add(new JobInfoItem("DRG", "LNC", "Dragoon"));
-            JobInfoList.Add(new JobInfoItem("BRD", "ARC", "Bard"));
-            JobInfoList.Add(new JobInfoItem("WHM", "CNJ", "White Mage"));
-            JobInfoList.Add(new JobInfoItem("BLM", "THM", "Black Mage"));
-            JobInfoList.Add(new JobInfoItem("SMN", "ACN", "Summoner", "#2ECC40"));
-            JobInfoList.Add(new JobInfoItem("SCH", "ACN", "Scholar", "#bba9cd"));
-            JobInfoList.Add(new JobInfoItem("ROG", null, "Rogue", "#A796AB"));
-            JobInfoList.Add(new JobInfoItem("NIN", "ROG", "Ninja"));
-            JobInfoList.Add(new JobInfoItem("MCH", null, "Machinist", "#DBF7FF"));
-            JobInfoList.Add(new JobInfoItem("DRK", null, "Dark Knight", "#f79414"));
-            JobInfoList.Add(new JobInfoItem("AST", null, "Astrologian", "#edd25f"));
-            JobInfoList.Add(new JobInfoItem("SAM", null, "Samurai", "#b8b3b1"));
-            JobInfoList.Add(new JobInfoItem("RDM", null, "Red Mage", "#EB9EBA"));
-            JobInfoList.Add(new JobInfoItem("BLU", "Blue Mage"));
-            JobInfoList.Add(new JobInfoItem("GNB", null, "Gunbreaker", "#f0b885"));
-            JobInfoList.Add(new JobInfoItem("DNC", null, "Dancer", "#f8d3c9"));
+            JobInfoList.Add(new JobInfoSetting("PLD", "GLD", "Paladin"));
+            JobInfoList.Add(new JobInfoSetting("MNK", "PGL", "Monk"));
+            JobInfoList.Add(new JobInfoSetting("WAR", "MRD", "Warrior"));
+            JobInfoList.Add(new JobInfoSetting("DRG", "LNC", "Dragoon"));
+            JobInfoList.Add(new JobInfoSetting("BRD", "ARC", "Bard"));
+            JobInfoList.Add(new JobInfoSetting("WHM", "CNJ", "White Mage"));
+            JobInfoList.Add(new JobInfoSetting("BLM", "THM", "Black Mage"));
+            JobInfoList.Add(new JobInfoSetting("SMN", "ACN", "Summoner", "#2ECC40"));
+            JobInfoList.Add(new JobInfoSetting("SCH", "ACN", "Scholar", "#bba9cd"));
+            JobInfoList.Add(new JobInfoSetting("ROG", null, "Rogue", "#A796AB"));
+            JobInfoList.Add(new JobInfoSetting("NIN", "ROG", "Ninja"));
+            JobInfoList.Add(new JobInfoSetting("MCH", null, "Machinist", "#DBF7FF"));
+            JobInfoList.Add(new JobInfoSetting("DRK", null, "Dark Knight", "#f79414"));
+            JobInfoList.Add(new JobInfoSetting("AST", null, "Astrologian", "#edd25f"));
+            JobInfoList.Add(new JobInfoSetting("SAM", null, "Samurai", "#b8b3b1"));
+            JobInfoList.Add(new JobInfoSetting("RDM", null, "Red Mage", "#EB9EBA"));
+            JobInfoList.Add(new JobInfoSetting("BLU", "Blue Mage"));
+            JobInfoList.Add(new JobInfoSetting("GNB", null, "Gunbreaker", "#f0b885"));
+            JobInfoList.Add(new JobInfoSetting("DNC", null, "Dancer", "#f8d3c9"));
 
-            JobInfo = new Dictionary<string, JobInfoItem>();
+            JobInfo = new Dictionary<string, JobInfoSetting>();
             foreach (var item in JobInfoList)
             {
                 JobInfo.Add(item.Acronym, item);
