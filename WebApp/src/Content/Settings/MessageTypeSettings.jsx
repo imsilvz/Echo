@@ -12,12 +12,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import Button from '@material-ui/core/Button';
+
 import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
-import Snackbar from '@material-ui/core/Snackbar';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
+
 import Typography from '@material-ui/core/Typography';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -31,12 +30,38 @@ const styles = theme => ({
     }
 });
 
+const ColoredRect = (props) => {
+    const { color } = props;
+    return (
+        <svg style={{
+            display:'inline-block', 
+            width:'1.1876em', 
+            height:'1.1876em',
+            margin: '3px 0 7px',
+        }}>
+            <rect 
+                x="1" 
+                y="1"
+                width="calc(1.1876em - 2px)" 
+                height="calc(1.1876em - 2px)" 
+                style={{
+                    fill: color,
+                    stroke: "black",
+                    strokeWidth: "1"
+                }}
+            />
+        </svg>
+    );
+}
+
 const MessageTypeRow = (props) => {
     const { code, data } = props;
     return (
         <TableRow>
             <TableCell component="th" scope="row">
-                {data.Name}
+                <span style={{color: data.Color}}>
+                    {data.Name}
+                </span>
             </TableCell>
             <TableCell padding="checkbox">
                 <Checkbox checked={data.IsBattle}/>
@@ -59,7 +84,26 @@ const MessageTypeRow = (props) => {
                 )}
             </TableCell>
             <TableCell>
-                {data.Color}
+                <TextField
+                    size="small"
+                    margin="none"
+                    value={data.Color}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <ColoredRect color={data.Color}/>
+                            </InputAdornment>
+                        ),
+                        inputProps: {
+                            style: {
+                                cursor: "pointer",
+                            }
+                        },
+                        style: {
+                            cursor: "pointer",
+                        }
+                    }}
+                />
             </TableCell>
         </TableRow>
     )
@@ -90,8 +134,8 @@ const MessageTypeSettings = (props) => {
                                 <TableCell>Message Type</TableCell>
                                 <TableCell>Battle</TableCell>
                                 <TableCell>System</TableCell>
-                                <TableCell padding="normal">RP Chat</TableCell>
-                                <TableCell padding="normal">Name Highlight</TableCell>
+                                <TableCell padding="default">RP Chat</TableCell>
+                                <TableCell padding="default">Name Highlight</TableCell>
                                 <TableCell>Color</TableCell>
                             </TableRow>
                         </TableHead>
