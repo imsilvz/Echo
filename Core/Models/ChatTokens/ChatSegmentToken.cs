@@ -49,6 +49,10 @@ namespace Echo.Core.Models.ChatTokens
                         }
                         else
                         {
+                            if(b == 0x1F) {
+                                Debug.WriteLine("HELLO WORLD");
+                                break;
+                            }
                             tokenByteList.Add(b);
                         }
                     }
@@ -67,6 +71,13 @@ namespace Echo.Core.Models.ChatTokens
                         }
                         Tokens.Add(textToken);
                     }
+
+                    // clean up excess bytes[]
+                    long endPos = s.Position;
+                    byte[] arr = new byte[s.Position - 1];
+                    s.Seek(0, SeekOrigin.Begin);
+                    Array.Copy(Data, arr, arr.Length);
+                    Data = arr;
                 }
             }
             return true;
