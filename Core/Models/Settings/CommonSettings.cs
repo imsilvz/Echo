@@ -37,11 +37,70 @@ namespace Echo.Core.Models.Settings
         {
             ChatTypes = new Dictionary<string, ChatTypeSetting>();
 
+            // Standard Chat Messages
+            ChatTypes.Add("000A", new ChatTypeSetting()
+            {
+                Name = "Say",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000B", new ChatTypeSetting()
+            {
+                Name = "Shout",
+                Color = "#FFA666"
+            });
+            ChatTypes.Add("000C", new ChatTypeSetting()
+            {
+                Name = "Tell (Outgoing)",
+                Color = "#FFB8DE",
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000D", new ChatTypeSetting()
+            {
+                Name = "Tell (Incoming)",
+                Color = "#FFB8DE",
+                NameHighlight = true,
+            });
+            ChatTypes.Add("000E", new ChatTypeSetting()
+            {
+                Name = "Party",
+                Color = "#66E5FF",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001C", new ChatTypeSetting()
+            {
+                Name = "Emote",
+                Color = "#BAFFF0",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001D", new ChatTypeSetting()
+            {
+                Name = "Emote",
+                Color = "#BAFFF0",
+                IsRpChat = true,
+                NameHighlight = true,
+            });
+            ChatTypes.Add("001E", new ChatTypeSetting()
+            {
+                Name = "Yell",
+                Color = "#FFFF00"
+            });
+
+            // Special Chat Channel
+            ChatTypes.Add("001B", new ChatTypeSetting()
+            {
+                Name = "Novice", // Novice Network
+                Color = "#D4FF7D"
+            });
+
             // System
             ChatTypes.Add("0003", new ChatTypeSetting()
             {
                 Name = "Welcome",
-                IsSystem = true
+                Color = "#B38CFF",
+                IsSystem = true,
             });
             ChatTypes.Add("0039", new ChatTypeSetting()
             {
@@ -112,64 +171,6 @@ namespace Echo.Core.Models.Settings
             {
                 Name = "LocalLoseStatus",
                 IsBattle = true
-            });
-
-            // Standard Chat Messages
-            ChatTypes.Add("000A", new ChatTypeSetting()
-            {
-                Name = "Say",
-                IsRpChat = true,
-                NameHighlight = true,
-            });
-            ChatTypes.Add("000B", new ChatTypeSetting()
-            {
-                Name = "Shout",
-                Color = "#FFA666"
-            });
-            ChatTypes.Add("000C", new ChatTypeSetting()
-            {
-                Name = "Tell (Outgoing)",
-                Color = "#FFB8DE",
-                NameHighlight = true,
-            });
-            ChatTypes.Add("000D", new ChatTypeSetting()
-            {
-                Name = "Tell (Incoming)",
-                Color = "#FFB8DE",
-                NameHighlight = true,
-            });
-            ChatTypes.Add("000E", new ChatTypeSetting()
-            {
-                Name = "Party",
-                Color = "#66E5FF",
-                IsRpChat = true,
-                NameHighlight = true,
-            });
-            ChatTypes.Add("001C", new ChatTypeSetting()
-            {
-                Name = "Emote",
-                Color = "#BAFFF0",
-                IsRpChat = true,
-                NameHighlight = true,
-            });
-            ChatTypes.Add("001D", new ChatTypeSetting()
-            {
-                Name = "Emote",
-                Color = "#BAFFF0",
-                IsRpChat = true,
-                NameHighlight = true,
-            });
-            ChatTypes.Add("001E", new ChatTypeSetting()
-            {
-                Name = "Yell",
-                Color = "#FFFF00"
-            });
-
-            // Special Chat Channel
-            ChatTypes.Add("001B", new ChatTypeSetting()
-            {
-                Name = "Novice", // Novice Network
-                Color = "#D4FF7D"
             });
         }
 

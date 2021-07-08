@@ -385,8 +385,6 @@ OverrideMessageType("000E", {
             this.Color
         );
 
-        console.log(message);
-
         let emoteColor = null;
         if(this.IsRpChat) {
             let state = store.getState();

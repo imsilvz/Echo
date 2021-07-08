@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
+import MessageTypeSettings from './MessageTypeSettings';
 import JobColorSettings from './JobColorSettings';
 
 const styles = theme => ({
@@ -21,6 +22,7 @@ const styles = theme => ({
     },
     SettingsCard: {
         marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
     }
 });
 
@@ -37,6 +39,8 @@ const CommonSettings = (props) => {
                     Common Settings
                 </Typography>
             </Box>
+            <MessageTypeSettings/>
+            <Divider/>
             <JobColorSettings/>
             <Divider/>
         </Card>
