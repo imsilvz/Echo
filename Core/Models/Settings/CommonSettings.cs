@@ -77,7 +77,7 @@ namespace Echo.Core.Models.Settings
             });
             ChatTypes.Add("001D", new ChatTypeSetting()
             {
-                Name = "Emote",
+                Name = "AnimatedEmote",
                 Color = "#BAFFF0",
                 IsRpChat = true,
                 NameHighlight = true,
