@@ -33,6 +33,9 @@ namespace Echo.Core.Models
 
         public bool Tokenize()
         {
+            bool success1 = false;
+            bool success2 = false;
+            bool success3 = false;
             byte[] headerBytes;
             byte[] sourceBytes;
             byte[] payloadBytes;
@@ -59,49 +62,26 @@ namespace Echo.Core.Models
 
                     headerBytes = byteList.ToArray();
                     byteList.Clear();
+                    _header = new ChatHeaderToken(headerBytes);
+                    success1 = _header.Tokenize();
 
-                    // Read Segment 3 first to avoid 1F in Source
-                    // Segment 3 (Body/Payload) is everything that remains in the message after terminator
-                    long sourceStart = s.Position;
-                    long sourceEnd;
-                    s.Seek(-1, SeekOrigin.End);
+                    // read source bytes
+                    long pos = s.Position;
+                    sourceBytes = reader.ReadBytes((int)(s.Length - s.Position));
+                    _source = new ChatSegmentToken(sourceBytes);
+                    success2 = _source.Tokenize();
 
-                    do
-                    {
-                        byte b = reader.ReadByte();
-                        s.Seek(-2, SeekOrigin.Current);
-                        if (b == 0x1F)
-                            break;
-                        byteList.Add(b);
-                    }
-                    while (s.Position > sourceStart);
+                    // verify it is a proper terminator
+                    s.Seek(pos + _source.Data.Length, SeekOrigin.Begin);
+                    term = reader.ReadByte();
+                    if (term != 0x1F) { return false; }
 
-                    byteList.Reverse();
-                    payloadBytes = byteList.ToArray();
-                    byteList.Clear();
-
-                    sourceEnd = s.Position;
-                    s.Seek(sourceStart, SeekOrigin.Begin);
-
-                    // Segment 2 is the source, terminated by 1F
-                    while(s.Position <= sourceEnd)
-                    {
-                        byte b = reader.ReadByte();
-                        byteList.Add(b);
-                    }
-
-                    sourceBytes = byteList.ToArray();
-                    byteList.Clear();
+                    // read body bytes
+                    payloadBytes = reader.ReadBytes((int)(s.Length - s.Position));
+                    _body = new ChatSegmentToken(payloadBytes);
+                    success3 = _body.Tokenize();
                 }
             }
-
-            _header = new ChatHeaderToken(headerBytes);
-            _source = new ChatSegmentToken(sourceBytes);
-            _body = new ChatSegmentToken(payloadBytes);
-
-            bool success1 = _header.Tokenize();
-            bool success2 = _source.Tokenize();
-            bool success3 = _body.Tokenize();
 
             if (success1 && success2 && success3)
             {
