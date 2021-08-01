@@ -1,11 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/styles';
 
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-
+import SettingsCard from '../SettingsCard';
 import MessageTypeSettings from './MessageTypeSettings';
 import JobColorSettings from './JobColorSettings';
 
@@ -29,21 +26,12 @@ const styles = theme => ({
 const CommonSettings = (props) => {
     const { classes } = props;
     return (
-        <Card className={classes.SettingsCard}>
-            <Box className={classes.CardHeaderContainer}>
-                <Typography
-                    className={classes.CardHeaderText}
-                    component="h2"
-                    variant="h4"
-                >
-                    Common Settings
-                </Typography>
-            </Box>
+        <SettingsCard name="Common Settings">
             <MessageTypeSettings/>
             <Divider/>
             <JobColorSettings/>
             <Divider/>
-        </Card>
-    )
+        </SettingsCard>
+    );
 }
 export default withStyles(styles, { withTheme: true })(CommonSettings);

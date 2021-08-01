@@ -31,13 +31,16 @@ namespace Echo.Core.Enum.FFXIV
         AnimEmote           = 0x001D,
         Yell                = 0x001E,
 
+        CWLS1               = 0x0025,
+
         // Special
         NoviceNetwork       = 0x001B,
 
         // System
         WelcomeMessage      = 0x0003,
         SystemMessage       = 0x0039,
-        SystemError         = 0x0044,
+        SystemError1        = 0x003C,
+        Systemerror2        = 0x0044,
         PartyFinderMessage  = 0x0048,
         JobChange           = 0x0839,
         ExperienceGain      = 0x0840,
@@ -59,7 +62,9 @@ namespace Echo.Core.Enum.FFXIV
 
         Emote = 0x001C,
         AnimEmote = 0x001D,
-        Yell = 0x001E
+        Yell = 0x001E,
+
+        CWLS1 = 0x0025
     }
 
     public enum SpecialChatType : ushort

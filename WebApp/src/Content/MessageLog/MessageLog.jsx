@@ -43,7 +43,7 @@ const styles = theme => ({
     },
     messageEnd: {
         position: "relative",
-        top: -theme.spacing(0.5),
+        top: -theme.spacing(1),
     },
     scrollButton: {
         width: "100%",
@@ -86,7 +86,7 @@ class MessageLog extends React.Component
     }
 
     componentDidMount() {
-        this.scrollToBottom("auto");
+        this.scrollToBottom("instant");
         
         // observers to report on intersections
         const observerSettings = {
@@ -126,19 +126,24 @@ class MessageLog extends React.Component
     }
     
     componentDidUpdate(prevProps, prevState) {
+        const { Target } = this.props;
         const { smartScrollTop, smartScrollBot } = this.state;
 
-        // only scroll if new messages
-        let prevLen = prevProps.Messages.length;
-        let currLen = this.props.Messages.length;
-        if(prevLen != currLen) {
-            // autoscroll only if we are at bottom
-            if(smartScrollBot)
-            {
-                if(prevProps.Messages.length == 0) {     
-                    this.scrollToBottom("auto");
-                } else {
-                    this.scrollToBottom();
+        if(Target != prevProps.Target) {
+            this.scrollToBottom("instant");
+        } else {
+            // only scroll if new messages
+            let prevLen = prevProps.Messages.length;
+            let currLen = this.props.Messages.length;
+            if(prevLen != currLen) {
+                // autoscroll only if we are at bottom
+                if(smartScrollBot)
+                {
+                    if(prevProps.Messages.length == 0) {     
+                        this.scrollToBottom("instant");
+                    } else {
+                        this.scrollToBottom();
+                    }
                 }
             }
         }

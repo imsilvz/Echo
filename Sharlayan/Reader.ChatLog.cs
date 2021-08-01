@@ -68,7 +68,6 @@ namespace Sharlayan {
                     this._chatLogReader.ChatLogFirstRun = false;
                     this._chatLogReader.PreviousOffset = 0;//this._chatLogReader.Indexes[0];//this._chatLogReader.Indexes[(int) currentArrayIndex - 1];
                     this._chatLogReader.PreviousArrayIndex = 0;//(int) currentArrayIndex - 1;
-                    Debug.WriteLine(this._chatLogReader.Indexes[0]);
                 }
                 else {
                     if (currentArrayIndex < this._chatLogReader.PreviousArrayIndex) {
