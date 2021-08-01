@@ -94,7 +94,7 @@ function QuoteHighlight(message, collection, color, emoteColor) {
     if(emoteColor) {
         for(let item of collection) {
             if(typeof(item) == "string") {
-                if(item.includes("\"")) {
+                if(item.includes("\"") || item.includes("\“") || item.includes("\”")) {
                     hasQuote = true;
                     break;
                 }
@@ -111,10 +111,11 @@ function QuoteHighlight(message, collection, color, emoteColor) {
     let quoteData = [];
     for(let item of collection) {
         if(typeof(item) == "string") {
-            let segments = item.split(/(\")/);
+            let segments = item.split(/(\"|\“|\”)/);
             for(let idx=0; idx<segments.length; idx++) {
                 // check if segment is a delim
-                if(segments[idx] == "\"") {
+                let val = segments[idx];
+                if(val == "\"" || val == "\“" || val == "\”") {
                     if(inQuote) {
                         // end quote
                         inQuote = false;
@@ -204,19 +205,27 @@ const MessageTypeDict = {
         IsRpChat: false,
         NameHighlight: false,
         UseEmoteColor: false,
+        ShowChannelName: false,
         Format: function(message, name, server, content) {
+            let channel = this.Name.toUpperCase();
+
             if(this.IsSystem || this.IsBattle) {
                 return (
                     <span style={{color:this.Color}}>
+                        {this.ShowChannelName && `[${channel}] `}
                         {content}
                     </span>
                 );
             }
+            
+            let dateTime = new Date(message.Timestamp);
+            let timeStamp = `${dateTime.getHours()}-${dateTime.getMinutes()}-${dateTime.getSeconds()}`;
+            console.log(timeStamp);
 
             if(server) {
                 return (
                     <span style={{color:this.Color}}>
-                        {/*`[${channel}] `*/}
+                        {this.ShowChannelName && `[${channel}] `}
                         {name}
                         {` (${server}): `}
                         {content}
@@ -225,7 +234,7 @@ const MessageTypeDict = {
             }
             return (
                 <span style={{color:this.Color}}>
-                    {/*`[${channel}] `*/}
+                    {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {": "}
                     {content}   
@@ -233,7 +242,6 @@ const MessageTypeDict = {
             )
         },
         Parse: function(message) {
-            let channel = this.Name.toUpperCase();
             let name = message.MessageSource.SourcePlayer;
             let server = message.MessageSource.SourceServer;
             let collection = LinkHighlight(
@@ -292,9 +300,11 @@ OverrideMessageType("000A", {
 })
 OverrideMessageType("000C", {
     Format: function(message, name, server, content) {
+        let channel = this.Name.toUpperCase();
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {this.ShowChannelName && `[${channel}] `}
                     {">> "}
                     {name}
                     {` (${server}): `}
@@ -304,6 +314,7 @@ OverrideMessageType("000C", {
         }
         return (
             <span style={{color:this.Color}}>
+                {this.ShowChannelName && `[${channel}] `}
                 {">> "}
                 {name}
                 {": "}
@@ -314,9 +325,11 @@ OverrideMessageType("000C", {
 });
 OverrideMessageType("000D", {
     Format: function(message, name, server, content) {
+        let channel = this.Name.toUpperCase();
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {` (${server}) >> `}
                     {content}
@@ -325,6 +338,7 @@ OverrideMessageType("000D", {
         }
         return (
             <span style={{color:this.Color}}>
+                {this.ShowChannelName && `[${channel}] `}
                 {name}
                 {" >> "}
                 {content}
@@ -334,9 +348,11 @@ OverrideMessageType("000D", {
 });
 OverrideMessageType("000E", {
     Format: function(message, name, server, content) {
+        let channel = this.Name.toUpperCase();
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {this.ShowChannelName && `[${channel}] `}
                     {"("}
                     {name}
                     {` (${server})) `}
@@ -346,6 +362,7 @@ OverrideMessageType("000E", {
         }
         return (
             <span style={{color:this.Color}}>
+                {this.ShowChannelName && `[${channel}] `}
                 {"("}
                 {name}
                 {") "}
@@ -356,10 +373,11 @@ OverrideMessageType("000E", {
 })
 OverrideMessageType("001C", {
     Format: function(message, name, server, content) {
+        let channel = this.Name.toUpperCase();
         if(server) {
             return (
                 <span style={{color:this.Color}}>
-                    {/*"[EMOTE] "*/}
+                    {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {` (${server}) `}
                     {content}
@@ -368,7 +386,7 @@ OverrideMessageType("001C", {
         }
         return (
             <span style={{color:this.Color}}>
-                {/*"[EMOTE] "*/}
+                {this.ShowChannelName && `[${channel}] `}
                 {name}
                 {" "}
                 {content}
@@ -378,9 +396,10 @@ OverrideMessageType("001C", {
 });
 OverrideMessageType("001D", {
     Format: function(message, name, server, content) {
+        let channel = this.Name.toUpperCase();
         return (
             <span style={{color:this.Color}}>
-                {/*`[EMOTE] `*/}
+                {this.ShowChannelName && `[EMOTE] `}
                 {content}
             </span>
         );

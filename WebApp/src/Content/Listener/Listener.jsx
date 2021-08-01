@@ -28,6 +28,7 @@ const Listener = (props) => {
 
     return (
         <MessageLog
+            Target={targetName}
             Messages={filtered}
             EmptyMessage={targetName ? "No Messages" : "You have no target!"}
             Settings={settings}

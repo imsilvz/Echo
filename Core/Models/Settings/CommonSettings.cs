@@ -14,6 +14,7 @@ namespace Echo.Core.Models.Settings
         public bool IsSystem { get; set; } = false;
         public bool IsRpChat { get; set; } = false;
         public bool NameHighlight { get; set; } = false;
+        public bool ShowChannelName { get; set; } = false;
         public string Color { get; set; } = "#F7F7F7";
     }
 
@@ -110,6 +111,12 @@ namespace Echo.Core.Models.Settings
                 Name = "Yell",
                 Color = "#FFFF00"
             });
+            ChatTypes.Add("0025", new ChatTypeSetting()
+            {
+                Name = "CWLS1",
+                Color = "#D4FF7D",
+                ShowChannelName = true,
+            });
 
             // Special Chat Channel
             ChatTypes.Add("001B", new ChatTypeSetting()
@@ -131,9 +138,14 @@ namespace Echo.Core.Models.Settings
                 Color = "#CCCCCC",
                 IsSystem = true
             });
+            ChatTypes.Add("003C", new ChatTypeSetting()
+            {
+                Name = "Error", // "That function cannot be performed with characters on the free trial."
+                IsSystem = true,
+            });
             ChatTypes.Add("0044", new ChatTypeSetting()
             {
-                Name = "Error",
+                Name = "Error", // Fate Error Message?
                 IsSystem = true
             });
             ChatTypes.Add("0048", new ChatTypeSetting()

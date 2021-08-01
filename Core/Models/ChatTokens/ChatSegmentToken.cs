@@ -50,7 +50,6 @@ namespace Echo.Core.Models.ChatTokens
                         else
                         {
                             if(b == 0x1F) {
-                                Debug.WriteLine("HELLO WORLD");
                                 break;
                             }
                             tokenByteList.Add(b);
