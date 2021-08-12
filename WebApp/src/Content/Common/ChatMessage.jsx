@@ -219,12 +219,15 @@ const MessageTypeDict = {
             }
             
             let dateTime = new Date(message.Timestamp);
-            let timeStamp = `${dateTime.getHours()}-${dateTime.getMinutes()}-${dateTime.getSeconds()}`;
-            console.log(timeStamp);
+            let hours = dateTime.getHours().toString().padStart(2, "0");
+            let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+            let seconds = dateTime.getSeconds().toString().padStart(2, "0")
+            let timeStamp = `[${hours}:${minutes}:${seconds}] `;
 
             if(server) {
                 return (
                     <span style={{color:this.Color}}>
+                        {timeStamp}
                         {this.ShowChannelName && `[${channel}] `}
                         {name}
                         {` (${server}): `}
@@ -234,6 +237,7 @@ const MessageTypeDict = {
             }
             return (
                 <span style={{color:this.Color}}>
+                    {timeStamp}
                     {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {": "}
@@ -301,9 +305,17 @@ OverrideMessageType("000A", {
 OverrideMessageType("000C", {
     Format: function(message, name, server, content) {
         let channel = this.Name.toUpperCase();
+
+        let dateTime = new Date(message.Timestamp);
+        let hours = dateTime.getHours().toString().padStart(2, "0");
+        let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+        let seconds = dateTime.getSeconds().toString().padStart(2, "0")
+        let timeStamp = `[${hours}:${minutes}:${seconds}] `;
+
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {timeStamp}
                     {this.ShowChannelName && `[${channel}] `}
                     {">> "}
                     {name}
@@ -314,6 +326,7 @@ OverrideMessageType("000C", {
         }
         return (
             <span style={{color:this.Color}}>
+                {timeStamp}
                 {this.ShowChannelName && `[${channel}] `}
                 {">> "}
                 {name}
@@ -326,9 +339,17 @@ OverrideMessageType("000C", {
 OverrideMessageType("000D", {
     Format: function(message, name, server, content) {
         let channel = this.Name.toUpperCase();
+
+        let dateTime = new Date(message.Timestamp);
+        let hours = dateTime.getHours().toString().padStart(2, "0");
+        let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+        let seconds = dateTime.getSeconds().toString().padStart(2, "0");
+        let timeStamp = `[${hours}:${minutes}:${seconds}] `;
+
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {timeStamp}
                     {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {` (${server}) >> `}
@@ -338,6 +359,7 @@ OverrideMessageType("000D", {
         }
         return (
             <span style={{color:this.Color}}>
+                {timeStamp}
                 {this.ShowChannelName && `[${channel}] `}
                 {name}
                 {" >> "}
@@ -349,9 +371,17 @@ OverrideMessageType("000D", {
 OverrideMessageType("000E", {
     Format: function(message, name, server, content) {
         let channel = this.Name.toUpperCase();
+
+        let dateTime = new Date(message.Timestamp);
+        let hours = dateTime.getHours().toString().padStart(2, "0");
+        let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+        let seconds = dateTime.getSeconds().toString().padStart(2, "0");
+        let timeStamp = `[${hours}:${minutes}:${seconds}] `;
+
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {timeStamp}
                     {this.ShowChannelName && `[${channel}] `}
                     {"("}
                     {name}
@@ -362,6 +392,7 @@ OverrideMessageType("000E", {
         }
         return (
             <span style={{color:this.Color}}>
+                {timeStamp}
                 {this.ShowChannelName && `[${channel}] `}
                 {"("}
                 {name}
@@ -374,9 +405,17 @@ OverrideMessageType("000E", {
 OverrideMessageType("001C", {
     Format: function(message, name, server, content) {
         let channel = this.Name.toUpperCase();
+
+        let dateTime = new Date(message.Timestamp);
+        let hours = dateTime.getHours().toString().padStart(2, "0");
+        let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+        let seconds = dateTime.getSeconds().toString().padStart(2, "0");
+        let timeStamp = `[${hours}:${minutes}:${seconds}] `;
+
         if(server) {
             return (
                 <span style={{color:this.Color}}>
+                    {timeStamp}
                     {this.ShowChannelName && `[${channel}] `}
                     {name}
                     {` (${server}) `}
@@ -386,6 +425,7 @@ OverrideMessageType("001C", {
         }
         return (
             <span style={{color:this.Color}}>
+                {timeStamp}
                 {this.ShowChannelName && `[${channel}] `}
                 {name}
                 {" "}
@@ -396,9 +436,15 @@ OverrideMessageType("001C", {
 });
 OverrideMessageType("001D", {
     Format: function(message, name, server, content) {
-        let channel = this.Name.toUpperCase();
+        let dateTime = new Date(message.Timestamp);
+        let hours = dateTime.getHours().toString().padStart(2, "0");
+        let minutes = dateTime.getMinutes().toString().padStart(2, "0");
+        let seconds = dateTime.getSeconds().toString().padStart(2, "0");
+        let timeStamp = `[${hours}:${minutes}:${seconds}] `;
+
         return (
             <span style={{color:this.Color}}>
+                {timeStamp}
                 {this.ShowChannelName && `[EMOTE] `}
                 {content}
             </span>
