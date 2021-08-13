@@ -119,6 +119,10 @@ namespace Echo.Core.Models.Settings
             });
 
             // Special Chat Channel
+            ChatTypes.Add("003D", new ChatTypeSetting()
+            {
+                Name = "NpcDialogue",
+            });
             ChatTypes.Add("001B", new ChatTypeSetting()
             {
                 Name = "Novice", // Novice Network
@@ -130,6 +134,12 @@ namespace Echo.Core.Models.Settings
             {
                 Name = "Welcome",
                 Color = "#B38CFF",
+                IsSystem = true,
+            });
+            ChatTypes.Add("0038", new ChatTypeSetting()
+            {
+                Name = "Echo",
+                Color = "#CCCCCC",
                 IsSystem = true,
             });
             ChatTypes.Add("0039", new ChatTypeSetting()
@@ -147,6 +157,12 @@ namespace Echo.Core.Models.Settings
             {
                 Name = "Error", // Fate Error Message?
                 IsSystem = true
+            });
+            ChatTypes.Add("0047", new ChatTypeSetting()
+            {
+                Name = "MarketBoard",
+                IsSystem = true,
+                Color = "#CCCCCC",
             });
             ChatTypes.Add("0048", new ChatTypeSetting()
             {
@@ -194,6 +210,19 @@ namespace Echo.Core.Models.Settings
                 Color = "#FFDE73",
                 IsSystem = true,
             });
+
+            ChatTypes.Add("0842", new ChatTypeSetting()
+            {
+                Name = "CraftingMessage",
+                Color = "#DEBFF7",
+                IsSystem = true,
+            });
+            ChatTypes.Add("08C2", new ChatTypeSetting()
+            {
+                Name = "LocalSynthesize",
+                Color = "#DEBFF7",
+                IsSystem = true,
+            });
             ChatTypes.Add("2042", new ChatTypeSetting()
             {
                 Name = "Synthesize", // Crafting!
@@ -217,7 +246,11 @@ namespace Echo.Core.Models.Settings
                 Name = "LocalLoseStatus",
                 IsBattle = true
             });
-
+            ChatTypes.Add("082C", new ChatTypeSetting()
+            {
+                Name = "LocalUseItem",
+                IsBattle = true,
+            });
             ChatTypes.Add("0B29", new ChatTypeSetting()
             {
                 Name = "LocalDamageDealt",

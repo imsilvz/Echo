@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Echo.Core.Models.Settings
 {
-    public class ChatlogSettings
+    public class ListenerSettings
     {
         public bool ShowBattle { get; set; } = false;
         public bool ShowSystem { get; set; } = false;
