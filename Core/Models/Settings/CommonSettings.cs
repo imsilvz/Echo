@@ -9,6 +9,7 @@ namespace Echo.Core.Models.Settings
     public class ChatTypeSetting
     {
         public string ChatType { get; set; }
+        public string Base { get; set; }
         public string Name { get; set; }
         public bool IsBattle { get; set; } = false;
         public bool IsSystem { get; set; } = false;
@@ -225,6 +226,7 @@ namespace Echo.Core.Models.Settings
             });
             ChatTypes.Add("2042", new ChatTypeSetting()
             {
+                Base = "1040",
                 Name = "Synthesize", // Crafting!
                 Color = "#DEBFF7",
                 IsSystem = true,
