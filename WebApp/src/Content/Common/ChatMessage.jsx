@@ -23,7 +23,7 @@ const styles = theme => ({
     },
 });
 
-function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key) {
+function LinkHighlight(MessageContent, highlight=false, color="#000000", key) {
     let message = MessageContent.Message;
     let links = MessageContent.Links;
     
@@ -62,7 +62,7 @@ function LinkHighlight(MessageContent, color="#000000", linkHighlight=false, key
                 uuid={linkKey}
                 color={color}
                 content={content}
-                shouldHighlight={linkHighlight}
+                shouldHighlight={highlight}
             />
         );
 
@@ -250,6 +250,7 @@ const MessageTypeDict = {
             let server = message.MessageSource.SourceServer;
             let collection = LinkHighlight(
                 message.MessageContent, 
+                false,
                 this.Color
             );
     
@@ -281,7 +282,7 @@ const MessageTypeDict = {
                 name = LinkHighlight({ 
                     Links: [{ StartIndex: 0, Length: name?.length }],
                     Message: name,
-                }, this.Color, this.NameHighlight, `${message.UUID}_Source`);
+                }, this.NameHighlight, this.Color, `${message.UUID}_Source`);
             }
 
             return this.Format(
@@ -508,7 +509,7 @@ const ChatMessage = (props, ref) => {
     const commonSettings = useSelector((state) => 
         state.settings.CommonSettings
     );
-    
+
     let formatted = FormatChatMessage(message, commonSettings);
     return (
         <p ref={ref} className={classes.chatMessage}>

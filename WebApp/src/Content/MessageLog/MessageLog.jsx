@@ -13,9 +13,17 @@ const styles = theme => ({
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
         paddingBottom: theme.spacing(0.5),
+
+        display: "flex",
+        flexDirection: "column-reverse",
         
         height: "100%",
         overflow: "hidden",
+    },
+    messageInnerPanel: {
+        minHeight: "25px",
+        maxHeight: "100%",
+        width: "100%",
     },
     messageContainer: {
         //position: "absolute",
@@ -170,12 +178,26 @@ class MessageList extends React.Component
             ...this.rowHeights,
             [index]: height,
         };
+
+        // update parent about height
+        if((this.props.Messages.length - 1) == index) {
+            this.props.HeightCallback();
+        }
     }
 
     getRowHeight(index) {
         return this.rowHeights[index] || 25;
     }
     
+    getTotalHeight() {
+        const { Messages } = this.props;
+        let totalHeight = 0;
+        for(let i=0; i<Messages.length; i++) {
+            totalHeight += this.getRowHeight(i);
+        }
+        return totalHeight;
+    }
+
     scrollToBottom() {
         const { Messages } = this.props;
         const { scrollLock } = this.state;
@@ -230,6 +252,7 @@ class MessageLog extends React.Component
         this.messageListRef = React.createRef();
         this.state = {
             showScrollHelper: false,
+            messageHeight: 0,
         }
     }
 
@@ -259,7 +282,7 @@ class MessageLog extends React.Component
         const { classes } = this.props;
         const { Settings } = this.props;
         const { Messages, EmptyMessage } = this.props;
-        const { showScrollHelper } = this.state;
+        const { showScrollHelper, messageHeight } = this.state;
 
         return (
             <div 
@@ -267,44 +290,57 @@ class MessageLog extends React.Component
                 className={classes.messagePanel} 
                 ref={this.panelRef}
             >
-                <AutoSizer>
-                    {({ height, width }) => (
-                        <MessageList
-                            classes={classes}
-                            width={width}
-                            height={height}
-                            Settings={Settings}
-                            Messages={Messages}
-                            ShowScrollHelper={(bool) => this.setState({showScrollHelper: bool})}
-                            ref={this.messageListRef}
-                        />
-                    )}
-                </AutoSizer>
-                { Messages.length <= 0 ? (
-                    <div className={classes.messageCentered}>
-                        <p>{EmptyMessage}</p>
-                    </div>
-                ) : (
-                    <React.Fragment>
-                    {showScrollHelper && (
-                        <div className={classes.scrollCatchup}>
-                            <Button 
-                                className={classes.scrollButton}
-                                endIcon={<ArrowDownwardIcon/>} 
-                                size="small" 
-                                variant="contained"
-                                onClick={() => {
-                                    if(this.messageListRef.current) {
-                                        this.messageListRef.current.scrollToBottom();
+                <div
+                    style={{height:messageHeight}}
+                    className={classes.messageInnerPanel}
+                >
+                    <AutoSizer>
+                        {({ height, width }) => (
+                            <MessageList
+                                classes={classes}
+                                width={width}
+                                height={height}
+                                Settings={Settings}
+                                Messages={Messages}
+                                ShowScrollHelper={(bool) => this.setState({showScrollHelper: bool})}
+                                HeightCallback={() => {
+                                    let r = this.messageListRef.current;
+                                    if(r) {
+                                        this.setState({
+                                            messageHeight: r.getTotalHeight()
+                                        });
                                     }
                                 }}
-                            >
-                                Jump to Present
-                            </Button>
+                                ref={this.messageListRef}
+                            />
+                        )}
+                    </AutoSizer>
+                </div>
+                { Messages.length <= 0 ? (
+                        <div className={classes.messageCentered}>
+                            <p>{EmptyMessage}</p>
                         </div>
+                    ) : (
+                        <React.Fragment>
+                        {showScrollHelper && (
+                            <div className={classes.scrollCatchup}>
+                                <Button 
+                                    className={classes.scrollButton}
+                                    endIcon={<ArrowDownwardIcon/>} 
+                                    size="small" 
+                                    variant="contained"
+                                    onClick={() => {
+                                        if(this.messageListRef.current) {
+                                            this.messageListRef.current.scrollToBottom();
+                                        }
+                                    }}
+                                >
+                                    Jump to Present
+                                </Button>
+                            </div>
+                        )}
+                        </React.Fragment>
                     )}
-                    </React.Fragment>
-                )}
             </div>
         )
     }
