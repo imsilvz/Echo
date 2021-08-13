@@ -13,6 +13,7 @@ const Chatlog = (props) => {
         let code = msg.MessageType;
         let messageType = commonSettings.ChatTypes[code];
 
+        if(!messageType) { console.log(msg); continue; }
         if(messageType.IsBattle && !settings.ShowBattle) { continue; }
         if(messageType.IsSystem && !settings.ShowSystem) { continue; }
 

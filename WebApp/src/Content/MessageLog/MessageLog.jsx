@@ -1,5 +1,5 @@
 import React from "react";
-import { VariableSizeList as List } from 'react-window';
+import { VariableSizeList as List, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { withStyles } from '@material-ui/styles';
 
@@ -73,7 +73,7 @@ const styles = theme => ({
     }
 });
 
-const MessageRow = ({data, index, style}) => {
+const MessageRow = React.memo(({data, index, style}) => {
     let item = data.Messages[index];
     const rowRef = React.useRef({});
 
@@ -92,7 +92,7 @@ const MessageRow = ({data, index, style}) => {
             />
         </div>
     );
-}
+}, areEqual);
 
 class MessageList extends React.Component
 {

@@ -508,7 +508,7 @@ const ChatMessage = (props, ref) => {
     const commonSettings = useSelector((state) => 
         state.settings.CommonSettings
     );
-
+    
     let formatted = FormatChatMessage(message, commonSettings);
     return (
         <p ref={ref} className={classes.chatMessage}>
