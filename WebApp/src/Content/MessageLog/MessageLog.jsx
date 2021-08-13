@@ -1,4 +1,6 @@
 import React from "react";
+import { VariableSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { withStyles } from '@material-ui/styles';
 
 import Button from "@material-ui/core/Button";
@@ -16,12 +18,12 @@ const styles = theme => ({
         overflow: "hidden",
     },
     messageContainer: {
-        position: "absolute",
-        left: theme.spacing(1),
-        right: theme.spacing(1),
-        bottom: theme.spacing(0.5),
+        //position: "absolute",
+        //left: theme.spacing(1),
+        //right: theme.spacing(1),
+        //bottom: theme.spacing(0.5),
 
-        maxHeight: "100%",
+        //maxHeight: "100%",
         overflowY: "scroll",
 
         '&::-webkit-scrollbar': {
@@ -71,102 +73,185 @@ const styles = theme => ({
     }
 });
 
-class MessageLog extends React.Component
+const MessageRow = ({data, index, style}) => {
+    let item = data.Messages[index];
+    const rowRef = React.useRef({});
+
+    React.useEffect(() => {
+        if(rowRef.current) {
+            data.SetHeight(index, rowRef.current.clientHeight);
+        }
+    }, [rowRef]);
+
+    return (
+        <div id={item.UUID} key={item.UUID} style={style}>
+            <ChatMessage
+                innerRef={rowRef}
+                message={item}
+                settings={data.Settings}
+            />
+        </div>
+    );
+}
+
+class MessageList extends React.Component
 {
     constructor(props) {
         super(props);
-        this.messageEndRef = React.createRef();
-        this.messageEndRef2 = React.createRef();
-        this.messagePanelRef = React.createRef();
-        this.scrollToBottom = this.scrollToBottom.bind(this);
+
+        this.listRef = React.createRef();
+        this.rowHeights = {};
+        this.scrollUpdate = false;
         this.state = {
-            smartScrollTop: true,
-            smartScrollBot: true,
+            startIndex: -1, 
+            stopIndex: -1,
+            scrollLock: true,
         }
     }
 
     componentDidMount() {
-        this.scrollToBottom("instant");
-        
-        // observers to report on intersections
-        const observerSettings = {
-            root: null,
-            rootMargin: "0px",
-            threshold: 1
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { Messages, ShowScrollHelper } = this.props;
+        const { scrollLock, stopIndex } = this.state;
+
+        if(scrollLock != prevState.scrollLock) {
+            ShowScrollHelper(!!!scrollLock);
         }
 
-        // two observers, as the callback only reports changed state
-        const topObserver = new IntersectionObserver((entries) => {
-            const [ entry ] = entries;
-            this.setState({
-                smartScrollTop: entry.isIntersecting
-            });
-        }, observerSettings);
-
-        const botObserver = new IntersectionObserver((entries) => {
-            const [ entry ] = entries;
-            this.setState({
-                smartScrollBot: entry.isIntersecting
-            });
-        }, observerSettings);
-
-        this.TopScrollObserver = topObserver;
-        this.BottomScrollObserver = botObserver;
-
-        if(this.messageEndRef.current) {
-            this.BottomScrollObserver.observe(
-                this.messageEndRef.current
-            )
-        }
-        if(this.messageEndRef2.current) {
-            this.TopScrollObserver.observe(
-                this.messageEndRef2.current
-            );
+        if(scrollLock) {
+            if(this.rowHeights[stopIndex]) {
+                this.scrollToBottom();
+            }
         }
     }
-    
-    componentDidUpdate(prevProps, prevState) {
-        const { Target } = this.props;
-        const { smartScrollTop, smartScrollBot } = this.state;
 
-        if(Target != prevProps.Target) {
-            this.scrollToBottom("instant");
+    onScroll(direction, requested) {
+        const { Messages } = this.props;
+        const { stopIndex } = this.state;
+
+        if(requested) { return; }
+        if(direction === "backward") {
+            this.setState({
+                scrollLock: false,
+            });
         } else {
-            // only scroll if new messages
-            let prevLen = prevProps.Messages.length;
-            let currLen = this.props.Messages.length;
-            if(prevLen != currLen) {
-                // autoscroll only if we are at bottom
-                if(smartScrollBot)
-                {
-                    if(prevProps.Messages.length == 0) {     
-                        this.scrollToBottom("instant");
-                    } else {
-                        this.scrollToBottom();
+            if(stopIndex == Messages.length - 1) {
+                if(Messages[stopIndex]) {
+                    let uuid = Messages[stopIndex].UUID;
+                    let elem = document.getElementById(uuid);
+                    let panel = document.getElementById("messagelog_panel");
+
+                    let rect = elem.getBoundingClientRect();
+                    let panelRect = panel.getBoundingClientRect();
+                    let panelPadding = parseInt(getComputedStyle(panel).paddingBottom);
+                    if(rect.bottom <= (panelRect.bottom - panelPadding)) {
+                        this.setState({
+                            scrollLock: true,
+                        });
                     }
                 }
             }
         }
     }
 
-    componentWillUnmount() {
-        if(this.messageEndRef.current) {
-            this.BottomScrollObserver.unobserve(
-                this.messageEndRef.current
-            );
-        }
-        if(this.messageEndRef2.current) {
-            this.TopScrollObserver.unobserve(
-                this.messageEndRef2.current
+    onRowsRendered(startIndex, stopIndex) {
+        this.setState({
+            startIndex: startIndex,
+            stopIndex: stopIndex
+        });
+    }
+
+    setRowHeight(index, height) {
+        this.listRef.current.resetAfterIndex(0);
+        this.rowHeights = {
+            ...this.rowHeights,
+            [index]: height,
+        };
+    }
+
+    getRowHeight(index) {
+        return this.rowHeights[index] || 25;
+    }
+    
+    scrollToBottom() {
+        const { Messages } = this.props;
+        const { scrollLock } = this.state;
+
+        if(this.listRef.current) {
+            if(!scrollLock) {
+                this.setState({
+                    scrollLock: true,
+                });
+            }
+            this.listRef.current.scrollToItem(
+                Messages.length - 1,
+                "end"
             );
         }
     }
 
-    scrollToBottom(behavior = "smooth") {
-        if(this.messageEndRef.current) {
-            this.messageEndRef.current.scrollIntoView({
-                behavior: behavior
-            });
+    handleResize() {
+        if(this.listRef.current) {
+            this.listRef.current.resetAfterIndex(0);
+        }
+    }
+
+    render() {
+        const { classes, width, height } = this.props;
+        const { Messages, Settings } = this.props;
+
+
+        return (
+            <List
+                className={classes.messageContainer}
+                width={width}
+                height={height}
+                itemCount={Messages.length}
+                itemData={{Messages: Messages, Settings: Settings, SetHeight: (index, height) => this.setRowHeight(index, height)}}
+                itemSize={(index) => this.getRowHeight(index)}
+                onScroll={({ scrollDirection, scrollUpdateWasRequested }) => this.onScroll(scrollDirection, scrollUpdateWasRequested)}
+                onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => this.onRowsRendered(visibleStartIndex, visibleStopIndex)}
+                ref={this.listRef}
+            >
+                {MessageRow}
+            </List>
+        )
+    }
+}
+
+class MessageLog extends React.Component
+{
+    constructor(props) {
+        super(props);
+        this.panelRef = React.createRef();
+        this.messageListRef = React.createRef();
+        this.state = {
+            showScrollHelper: false,
+        }
+    }
+
+    componentDidMount() {
+        this.ResizeSensor = new ResizeObserver(entries => {
+            if(this.messageListRef.current) {
+                this.messageListRef.current.handleResize();
+            }
+        });
+
+        if(this.panelRef.current) {
+            this.ResizeSensor.observe(
+                this.panelRef.current
+            );
+        }
+    }
+
+    componentWillUnmount() {
+        if(this.panelRef.current) {
+            this.ResizeSensor.unobserve(
+                this.panelRef.current
+            );
         }
     }
 
@@ -174,39 +259,34 @@ class MessageLog extends React.Component
         const { classes } = this.props;
         const { Settings } = this.props;
         const { Messages, EmptyMessage } = this.props;
-        const { smartScrollTop, smartScrollBot } = this.state;
+        const { showScrollHelper } = this.state;
 
-        // dynamically position top depending on panel size
-        let panel = this.messagePanelRef.current;
-        let panelHeight = 0;
-        if(panel) {
-            panelHeight = panel.offsetHeight;
-        }
         return (
             <div 
+                id="messagelog_panel"
                 className={classes.messagePanel} 
-                ref={this.messagePanelRef}
+                ref={this.panelRef}
             >
-                <div className={classes.messageContainer}>
-                    {Messages.map((item, idx) => {
-                        return (
-                            <ChatMessage 
-                                key={item.UUID} 
-                                message={item}
-                                settings={Settings}
-                            />
-                        );
-                    })}
-                    <div className={classes.messageEnd} ref={this.messageEndRef}/>
-                    <div className={classes.messageEnd} style={{top: -panelHeight}} ref={this.messageEndRef2}/>
-                </div>
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <MessageList
+                            classes={classes}
+                            width={width}
+                            height={height}
+                            Settings={Settings}
+                            Messages={Messages}
+                            ShowScrollHelper={(bool) => this.setState({showScrollHelper: bool})}
+                            ref={this.messageListRef}
+                        />
+                    )}
+                </AutoSizer>
                 { Messages.length <= 0 ? (
                     <div className={classes.messageCentered}>
                         <p>{EmptyMessage}</p>
                     </div>
                 ) : (
                     <React.Fragment>
-                    {!!!(smartScrollTop || smartScrollBot) && (
+                    {showScrollHelper && (
                         <div className={classes.scrollCatchup}>
                             <Button 
                                 className={classes.scrollButton}
@@ -214,7 +294,9 @@ class MessageLog extends React.Component
                                 size="small" 
                                 variant="contained"
                                 onClick={() => {
-                                    this.scrollToBottom();
+                                    if(this.messageListRef.current) {
+                                        this.messageListRef.current.scrollToBottom();
+                                    }
                                 }}
                             >
                                 Jump to Present

@@ -238,6 +238,11 @@ namespace Echo.Core.Models.Settings
                 Name = "LocalUseAction",
                 IsBattle = true
             });
+            ChatTypes.Add("08AB", new ChatTypeSetting()
+            {
+                Name = "LocalReadyAction",
+                IsBattle = true,
+            });
             ChatTypes.Add("08AE", new ChatTypeSetting()
             {
                 Name = "LocalGainStatus",
@@ -258,15 +263,51 @@ namespace Echo.Core.Models.Settings
                 Name = "LocalDamageDealt",
                 IsBattle = true
             });
+            ChatTypes.Add("0B2B", new ChatTypeSetting()
+            {
+                Name = "LocalBeginCast",
+                IsBattle = true
+            });
+            ChatTypes.Add("0B3A", new ChatTypeSetting()
+            {
+                Name = "LocalDefeatEnemy",
+                IsBattle = true
+            });
             ChatTypes.Add("0AA9", new ChatTypeSetting()
             {
                 Name = "LocalCriticalDealt",
                 IsBattle = true
             });
+            ChatTypes.Add("08AA", new ChatTypeSetting()
+            {
+                Name = "LocalNoEffect",
+                IsBattle = true,
+            });
             ChatTypes.Add("0AAB", new ChatTypeSetting()
             {
-                Name = "LocalBeginCast",
+                Name = "LocalBeginSelfCast",
                 IsBattle = true
+            });
+            ChatTypes.Add("08AD", new ChatTypeSetting()
+            {
+                Name = "LocalHeal",
+                IsBattle = true,
+            });
+
+            ChatTypes.Add("282B", new ChatTypeSetting()
+            {
+                Name = "EnemyUseAction",
+                IsBattle = true,
+            });
+            ChatTypes.Add("28A9", new ChatTypeSetting()
+            {
+                Name = "LocalEnemyHit",
+                IsBattle = true,
+            });
+            ChatTypes.Add("28AA", new ChatTypeSetting()
+            {
+                Name = "LocalEnemyMiss",
+                IsBattle = true,
             });
         }
 

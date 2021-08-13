@@ -11,15 +11,22 @@ namespace Echo.Core.Enum.FFXIV
         // All Chat Types!
         // Battle
         LocalUseAction      = 0x082B,
+        LocalReadyAction    = 0x08AB,
         LocalGainStatus     = 0x08AE,
         LocalLoseStatus     = 0x08B0,
         LocalUseItem        = 0x082C,
 
         LocalDamageDealt    = 0x0B29,
+        LocalBeginCast      = 0x0B2B,
+        LocalDefeatEnemy    = 0x0B3A,
         LocalCriticalDealt  = 0x0AA9,
-        LocalBeginCast      = 0x0AAB,
+        LocalNoEffect       = 0x08AA,
+        LocalBeginSelfCast  = 0x0AAB,
+        LocalHeal           = 0x08AD,
 
-        DefeatEnemy         = 0x0B3A,
+        EnemyUseAction      = 0x282B,
+        LocalEnemyHit       = 0x28A9,
+        LocalEnemyMiss      = 0x28AA,
 
         // Chat
         Say                 = 0x000A,

@@ -503,7 +503,7 @@ function FormatChatMessage(message, settings) {
     return message.Combined;
 }
 
-const ChatMessage = (props) => {
+const ChatMessage = (props, ref) => {
     const { classes, message, settings } = props;
     const commonSettings = useSelector((state) => 
         state.settings.CommonSettings
@@ -511,7 +511,7 @@ const ChatMessage = (props) => {
 
     let formatted = FormatChatMessage(message, commonSettings);
     return (
-        <p className={classes.chatMessage}>
+        <p ref={ref} className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {
                 if(typeof(child) == "string") {
                     return (
@@ -529,5 +529,5 @@ const ChatMessage = (props) => {
     );
 }
 export default React.memo(
-    withStyles(styles, { withTheme: true })(ChatMessage)
+    withStyles(styles, { withTheme: true })(React.forwardRef(ChatMessage))
 );
