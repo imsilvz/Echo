@@ -1,6 +1,4 @@
 import React from "react";
-import { VariableSizeList as List, areEqual } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { Virtuoso } from 'react-virtuoso';
 import { withStyles } from '@material-ui/styles';
 
