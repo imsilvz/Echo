@@ -44,9 +44,10 @@ namespace Echo.Core.Models.Settings
 
     public class CommonSettings
     {
-        public Dictionary<string, ChatTypeSetting> ChatTypes { get; set; }
-        public bool JobColorsEnabled { get; set; }
+        public int TimestampType { get; set; } = 1;
+        public bool JobColorsEnabled { get; set; } = true;
         public Dictionary<string, JobInfoSetting> JobInfo { get; set; }
+        public Dictionary<string, ChatTypeSetting> ChatTypes { get; set; }
         public CommonSettings() 
         {
             this.SetupDefaults();
@@ -313,7 +314,6 @@ namespace Echo.Core.Models.Settings
 
         private void SetupDefaultJobInfo()
         {
-            JobColorsEnabled = true;
             var JobInfoList = new List<JobInfoSetting>();
             // base classes
             JobInfoList.Add(new JobInfoSetting("Unknown", "Unknown"));

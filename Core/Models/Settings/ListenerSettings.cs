@@ -10,5 +10,6 @@ namespace Echo.Core.Models.Settings
     {
         public bool ShowBattle { get; set; } = false;
         public bool ShowSystem { get; set; } = false;
+        public bool ShowTimestamp { get; set; } = true;
     }
 }

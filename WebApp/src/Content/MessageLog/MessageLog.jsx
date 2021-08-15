@@ -130,59 +130,59 @@ class MessageLog extends React.Component
                 className={classes.messagePanel} 
                 ref={this.panelRef}
             >
-                <Virtuoso
-                    className={classes.messageContainer}
-                    totalCount={Messages.length}
-                    initialTopMostItemIndex={Messages.length - 1}
-                    itemContent={(index) => (
-                        <MessageRow
-                            Index={index}
-                            Message={Messages[index]}
-                            Settings={Settings}
-                        />
-                    )}
-                    alignToBottom={true}
-                    followOutput={(atBottom) => {
-                        if(atBottom) { return "smooth"; }
-                        return false;
-                    }}
-                    atBottomStateChange={(atBottom) => {
-                        if(atBottom) {
-                            this.setState({
-                                showScrollHelper: false,
-                            });
-                        }
-                    }}
-                    rangeChanged={(range) => {
-                        if(!showScrollHelper) {
-                            if(range.endIndex <= Messages.length - 5) {
-                                this.setState({
-                                    showScrollHelper: true,
-                                });
-                            }
-                        }
-                    }}
-                    ref={this.messageListRef}
-                />
                 { Messages.length <= 0 ? (
                         <div className={classes.messageCentered}>
                             <p>{EmptyMessage}</p>
                         </div>
                     ) : (
                         <React.Fragment>
-                        {showScrollHelper && (
-                            <div className={classes.scrollCatchup}>
-                                <Button 
-                                    className={classes.scrollButton}
-                                    endIcon={<ArrowDownwardIcon/>} 
-                                    size="small" 
-                                    variant="contained"
-                                    onClick={() => { this.scrollToBottom(); }}
-                                >
-                                    Jump to Present
-                                </Button>
-                            </div>
-                        )}
+                            <Virtuoso
+                                className={classes.messageContainer}
+                                totalCount={Messages.length}
+                                initialTopMostItemIndex={Messages.length - 1}
+                                itemContent={(index) => (
+                                    <MessageRow
+                                        Index={index}
+                                        Message={Messages[index]}
+                                        Settings={Settings}
+                                    />
+                                )}
+                                alignToBottom={true}
+                                followOutput={(atBottom) => {
+                                    if(atBottom) { return "smooth"; }
+                                    return false;
+                                }}
+                                atBottomStateChange={(atBottom) => {
+                                    if(atBottom) {
+                                        this.setState({
+                                            showScrollHelper: false,
+                                        });
+                                    }
+                                }}
+                                rangeChanged={(range) => {
+                                    if(!showScrollHelper) {
+                                        if(range.endIndex <= Messages.length - 5) {
+                                            this.setState({
+                                                showScrollHelper: true,
+                                            });
+                                        }
+                                    }
+                                }}
+                                ref={this.messageListRef}
+                            />
+                            {showScrollHelper && (
+                                <div className={classes.scrollCatchup}>
+                                    <Button 
+                                        className={classes.scrollButton}
+                                        endIcon={<ArrowDownwardIcon/>} 
+                                        size="small" 
+                                        variant="contained"
+                                        onClick={() => { this.scrollToBottom(); }}
+                                    >
+                                        Jump to Present
+                                    </Button>
+                                </div>
+                            )}
                         </React.Fragment>
                     )}
             </div>
