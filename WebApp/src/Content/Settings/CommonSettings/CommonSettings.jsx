@@ -27,9 +27,9 @@ const CommonSettings = (props) => {
     const { classes } = props;
     return (
         <SettingsCard name="Common Settings">
-            <MessageTypeSettings/>
-            <Divider/>
             <JobColorSettings/>
+            <Divider/>
+            <MessageTypeSettings/>
             <Divider/>
         </SettingsCard>
     );

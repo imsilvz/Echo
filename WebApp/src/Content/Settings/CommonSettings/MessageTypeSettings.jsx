@@ -55,7 +55,7 @@ const ColoredRect = (props) => {
     );
 }
 
-const MessageTypeRow = (props) => {
+const MessageTypeRow = React.memo((props) => {
     const { code, data } = props;
     const dispatch = useDispatch();
     let messageType = data[code];
@@ -208,7 +208,7 @@ const MessageTypeRow = (props) => {
             </TableCell>
         </TableRow>
     )
-}
+});
 
 const MessageTypeSettings = (props) => {
     const { classes } = props;
@@ -242,6 +242,7 @@ const MessageTypeSettings = (props) => {
                         </TableHead>
                         <TableBody>
                             {Object.keys(messageTypes).map((code) => {
+                                if(messageTypes[code].Base) { return; }
                                 return (
                                     <MessageTypeRow
                                         key={`settings_msgtype_${code}`}

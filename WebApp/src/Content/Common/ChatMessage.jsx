@@ -6,6 +6,7 @@ import ChatContent from './ChatContent';
 import ChatLink from './ChatLink';
 import ChatQuote from './ChatQuote';
 import store from "../../store";
+import { GetMessageType } from "../../Util/messages";
 
 const styles = theme => ({
     chatMessage: {
@@ -256,16 +257,14 @@ const MessageTypeDict = {
     
             if(this.IsRpChat) {
                 let emoteColor = null;
-                let state = store.getState();
-                let commonSettings = state.settings.CommonSettings;
                 if(this.UseEmoteColor) {
-                    emoteColor = commonSettings.ChatTypes["001C"].Color;
+                    emoteColor = GetMessageType("001C").Color;
                 }
 
                 collection = QuoteHighlight(
                     message,
                     collection,
-                    commonSettings.ChatTypes["000A"].Color,
+                    GetMessageType("000A").Color,
                     emoteColor ? emoteColor : this.Color
                 );
             }
@@ -436,6 +435,30 @@ OverrideMessageType("001C", {
     }
 });
 OverrideMessageType("001D", {
+    Parse: function(message) {
+        let name = message.MessageSource.SourcePlayer;
+        let server = message.MessageSource.SourceServer;
+        let collection = LinkHighlight(
+            message.MessageContent, 
+            true,
+            this.Color
+        );
+
+        let content = (
+            <ChatContent
+                key={`${message.UUID}_Content`}
+                uuid={`${message.UUID}_Content`}
+                content={collection}
+            />
+        );
+
+        return this.Format(
+            message,
+            name,
+            server,
+            content
+        )
+    },
     Format: function(message, name, server, content) {
         let dateTime = new Date(message.Timestamp);
         let hours = dateTime.getHours().toString().padStart(2, "0");
@@ -453,52 +476,50 @@ OverrideMessageType("001D", {
     }
 });
 
-function BuildMessageType(type, typeSettings) {
-    let messageType = {}
+function BuildMessageDict(type, typeSettings) {
+    let messageDict = {}
 
     // assign all default methods
-    messageType = Object.assign(
-        messageType, 
+    messageDict = Object.assign(
+        messageDict, 
         MessageTypeDict["DEFAULT"]
     );
 
     if(MessageTypeDict.hasOwnProperty(type)) {
         // override parse method if applicable
-        messageType = Object.assign(
-            messageType, 
+        messageDict = Object.assign(
+            messageDict, 
             MessageTypeDict[type]
         );
     }
 
     // apply settings to type
-    messageType = Object.assign(
-        messageType, 
+    messageDict = Object.assign(
+        messageDict, 
         typeSettings
     );
 
     // bind this keyword
-    for(let name in messageType) {
-        let prop = messageType[name];
+    for(let name in messageDict) {
+        let prop = messageDict[name];
         if(typeof(prop) == "function") {
-            let bound = messageType[name].bind(messageType);
-            messageType[name] = bound;
+            let bound = messageDict[name].bind(messageDict);
+            messageDict[name] = bound;
         }
     }
-    return messageType;
+    return messageDict;
 }
 
-function FormatChatMessage(message, settings) {
-    let messageTypes = settings.ChatTypes;
-
-    if(messageTypes.hasOwnProperty(message.MessageType)) {
-        let typeSettings = messageTypes[message.MessageType];
-        let messageType = BuildMessageType(
+function FormatChatMessage(message) {
+    let messageType = GetMessageType(message.MessageType);
+    if(messageType) {
+        let messageDict = BuildMessageDict(
             message.MessageType,
-            typeSettings
+            messageType
         );
 
         // if we have a parse method
-        return messageType.Parse(message);
+        return messageDict.Parse(message);
     }
     // default handling
     return message.Combined;
@@ -506,11 +527,8 @@ function FormatChatMessage(message, settings) {
 
 const ChatMessage = (props, ref) => {
     const { classes, message, settings } = props;
-    const commonSettings = useSelector((state) => 
-        state.settings.CommonSettings
-    );
 
-    let formatted = FormatChatMessage(message, commonSettings);
+    let formatted = FormatChatMessage(message);
     return (
         <p ref={ref} className={classes.chatMessage}>
             {React.Children.map(formatted, (child, i) => {

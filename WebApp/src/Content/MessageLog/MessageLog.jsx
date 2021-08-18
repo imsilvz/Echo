@@ -102,6 +102,8 @@ class MessageLog extends React.Component
         this.messageListRef = React.createRef();
         this.state = {
             showScrollHelper: false,
+            scrollAtBottom: true,
+            scrollLock: true,
         }
     }
 
@@ -122,7 +124,7 @@ class MessageLog extends React.Component
         const { classes } = this.props;
         const { Settings } = this.props;
         const { Messages, EmptyMessage } = this.props;
-        const { showScrollHelper } = this.state;
+        const { showScrollHelper, scrollAtBottom, scrollLock } = this.state;
 
         return (
             <div 
@@ -149,14 +151,30 @@ class MessageLog extends React.Component
                                 )}
                                 alignToBottom={true}
                                 followOutput={(atBottom) => {
-                                    if(atBottom) { return "smooth"; }
+                                    if(scrollLock) { return "smooth"; }
                                     return false;
                                 }}
                                 atBottomStateChange={(atBottom) => {
                                     if(atBottom) {
                                         this.setState({
                                             showScrollHelper: false,
+                                            scrollAtBottom: true,
+                                            scrollLock: true,
                                         });
+                                    } else {
+                                        this.setState({
+                                            scrollAtBottom: false,
+                                        });
+                                    }
+                                }}
+                                isScrolling={(scrolling) => {
+                                    console.log(`Scrolling: ${scrolling} | At Bottom: ${scrollAtBottom}`);
+                                    if(!scrolling) {
+                                        if(!scrollAtBottom && scrollLock) {
+                                            this.setState({
+                                                scrollLock: false
+                                            });
+                                        }
                                     }
                                 }}
                                 rangeChanged={(range) => {

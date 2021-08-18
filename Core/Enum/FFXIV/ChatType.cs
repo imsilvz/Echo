@@ -49,7 +49,10 @@ namespace Echo.Core.Enum.FFXIV
         WelcomeMessage      = 0x0003,
         EchoMessage         = 0x0038,
         SystemMessage       = 0x0039,
+        GatheringNotice     = 0x003B, //"003B::You sense an unknown grade rocky outcrop 133 yalms to the southeast."
         CraftingMessage     = 0x0842,
+        GatheringMessage    = 0x0843,
+        GatheringNotice2    = 0x083B,
         SystemError1        = 0x003C,
         SystemError2        = 0x0044,
         MarketboardMessage  = 0x0047,

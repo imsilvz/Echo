@@ -1,12 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import MessageLog from "../MessageLog/MessageLog";
+import { GetMessageType } from "../../Util/messages";
 
 const Listener = (props) => {
     const [ currentTarget, setCurrentTarget ] = React.useState(null);
     const chatLog = useSelector((state) => state.chatlog);
     const playerInfo = useSelector((state) => state.playerinfo);
-    const commonSettings = useSelector((state) => state.settings.CommonSettings);
     const settings = useSelector((state) => state.settings.ListenerSettings);
 
     if(playerInfo.TargetType <= 1) {
@@ -21,8 +21,8 @@ const Listener = (props) => {
     for(let i=0; i<chatLog.length; i++) {
         let msg = chatLog[i];
         let code = msg.MessageType;
-        let messageType = commonSettings.ChatTypes[code];
-        
+
+        let messageType = GetMessageType(code);
         if(!messageType) { console.log(msg); continue; }
         if(messageType.IsBattle && !settings.ShowBattle) { continue; }
         if(messageType.IsSystem && !settings.ShowSystem) { continue; }

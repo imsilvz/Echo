@@ -9,14 +9,14 @@ namespace Echo.Core.Models.Settings
     public class ChatTypeSetting
     {
         public string ChatType { get; set; }
-        public string Base { get; set; }
+        public string Base { get; set; } // if a setting has a Base property, it should inherit those props
         public string Name { get; set; }
-        public bool IsBattle { get; set; } = false;
-        public bool IsSystem { get; set; } = false;
-        public bool IsRpChat { get; set; } = false;
-        public bool NameHighlight { get; set; } = false;
-        public bool ShowChannelName { get; set; } = false;
-        public string Color { get; set; } = "#F7F7F7";
+        public bool? IsBattle { get; set; }
+        public bool? IsSystem { get; set; }
+        public bool? IsRpChat { get; set; }
+        public bool? NameHighlight { get; set; }
+        public bool? ShowChannelName { get; set; }
+        public string Color { get; set; }
     }
 
     public class JobInfoSetting
@@ -67,6 +67,7 @@ namespace Echo.Core.Models.Settings
             ChatTypes.Add("000A", new ChatTypeSetting()
             {
                 Name = "Say",
+                Color = "#F7F7F7",
                 IsRpChat = true,
                 NameHighlight = true,
             });
@@ -75,17 +76,21 @@ namespace Echo.Core.Models.Settings
                 Name = "Shout",
                 Color = "#FFA666"
             });
-            ChatTypes.Add("000C", new ChatTypeSetting()
+            ChatTypes.Add("TELL", new ChatTypeSetting()
             {
-                Name = "Tell (Outgoing)",
+                Name = "Tell",
                 Color = "#FFB8DE",
                 NameHighlight = true,
             });
+            ChatTypes.Add("000C", new ChatTypeSetting()
+            {
+                Base = "TELL",
+                Name = "Tell (Outgoing)",
+            });
             ChatTypes.Add("000D", new ChatTypeSetting()
             {
+                Base = "TELL",
                 Name = "Tell (Incoming)",
-                Color = "#FFB8DE",
-                NameHighlight = true,
             });
             ChatTypes.Add("000E", new ChatTypeSetting()
             {
@@ -103,27 +108,32 @@ namespace Echo.Core.Models.Settings
             });
             ChatTypes.Add("001D", new ChatTypeSetting()
             {
+                Base = "001C",
                 Name = "AnimatedEmote",
-                Color = "#BAFFF0",
-                IsRpChat = true,
-                NameHighlight = true,
             });
             ChatTypes.Add("001E", new ChatTypeSetting()
             {
                 Name = "Yell",
                 Color = "#FFFF00"
             });
-            ChatTypes.Add("0025", new ChatTypeSetting()
+
+            ChatTypes.Add("CWLS", new ChatTypeSetting()
             {
-                Name = "CWLS1",
+                Name = "CWLS",
                 Color = "#D4FF7D",
                 ShowChannelName = true,
+            });
+            ChatTypes.Add("0025", new ChatTypeSetting()
+            {
+                Base = "CWLS",
+                Name = "CWLS1",
             });
 
             // Special Chat Channel
             ChatTypes.Add("003D", new ChatTypeSetting()
             {
                 Name = "NpcDialogue",
+                Color = "#F7F7F7",
             });
             ChatTypes.Add("001B", new ChatTypeSetting()
             {
@@ -138,17 +148,27 @@ namespace Echo.Core.Models.Settings
                 Color = "#B38CFF",
                 IsSystem = true,
             });
-            ChatTypes.Add("0038", new ChatTypeSetting()
-            {
-                Name = "Echo",
+
+            ChatTypes.Add("SYSTEM", new ChatTypeSetting()
+            { 
+                Name = "System",
                 Color = "#CCCCCC",
                 IsSystem = true,
             });
+            ChatTypes.Add("0038", new ChatTypeSetting()
+            {
+                Base = "SYSTEM",
+                Name = "Echo",
+            });
             ChatTypes.Add("0039", new ChatTypeSetting()
             {
+                Base = "SYSTEM",
                 Name = "System",
-                Color = "#CCCCCC",
-                IsSystem = true
+            });
+            ChatTypes.Add("003B", new ChatTypeSetting()
+            {
+                Base = "SYNTHESIZE",
+                Name = "GatheringNotice",
             });
             ChatTypes.Add("003C", new ChatTypeSetting()
             {
@@ -162,21 +182,18 @@ namespace Echo.Core.Models.Settings
             });
             ChatTypes.Add("0047", new ChatTypeSetting()
             {
+                Base = "SYSTEM",
                 Name = "MarketBoard",
-                IsSystem = true,
-                Color = "#CCCCCC",
             });
             ChatTypes.Add("0048", new ChatTypeSetting()
             {
+                Base = "SYSTEM",
                 Name = "PartyFinder",
-                Color = "#CCCCCC",
-                IsSystem = true,
             });
             ChatTypes.Add("0839", new ChatTypeSetting()
             {
+                Base = "SYSTEM",
                 Name = "JobChange",
-                Color = "#CCCCCC",
-                IsSystem = true,
             });
             ChatTypes.Add("0840", new ChatTypeSetting()
             {
@@ -208,29 +225,40 @@ namespace Echo.Core.Models.Settings
             });
             ChatTypes.Add("2040", new ChatTypeSetting()
             {
-                Name = "LevelUp", // Achievement / Level Up
-                Color = "#FFDE73",
-                IsSystem = true,
+                Base = "1040",
+                Name = "Achievement", // Achievement / Level Up
             });
 
-            ChatTypes.Add("0842", new ChatTypeSetting()
+            ChatTypes.Add("SYNTHESIZE", new ChatTypeSetting()
             {
-                Name = "CraftingMessage",
+                Name = "Synthesize",
                 Color = "#DEBFF7",
                 IsSystem = true,
+            });
+            ChatTypes.Add("0842", new ChatTypeSetting()
+            {
+                Base = "SYNTHESIZE",
+                Name = "CraftingMessage",
+            });
+            ChatTypes.Add("0843", new ChatTypeSetting()
+            {
+                Base = "SYNTHESIZE",
+                Name = "GatheringMessage",
+            });
+            ChatTypes.Add("083B", new ChatTypeSetting()
+            {
+                Base = "SYNTHESIZE",
+                Name = "GatheringNotice",
             });
             ChatTypes.Add("08C2", new ChatTypeSetting()
             {
+                Base = "SYNTHESIZE",
                 Name = "LocalSynthesize",
-                Color = "#DEBFF7",
-                IsSystem = true,
             });
             ChatTypes.Add("2042", new ChatTypeSetting()
             {
-                Base = "1040",
+                Base = "SYNTHESIZE",
                 Name = "Synthesize", // Crafting!
-                Color = "#DEBFF7",
-                IsSystem = true,
             });
 
             // Battle
